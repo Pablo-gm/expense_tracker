@@ -1,0 +1,7 @@
+Create venv
+
+python manage.py makemigrations
+python manage.py migrate
+
+Create super user
+gitbash --> winpty python manage.py createsuperuser
