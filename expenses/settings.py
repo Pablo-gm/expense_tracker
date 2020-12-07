@@ -27,6 +27,10 @@ DEBUG = True
 
 ALLOWED_HOSTS = []
 
+# Password reset
+if DEBUG:
+    EMAIL_BACKEND = 'django.core.mail.backends.console.EmailBackend' # During development only
+
 
 # Application definition
 
@@ -55,7 +59,7 @@ ROOT_URLCONF = 'expenses.urls'
 TEMPLATES = [
     {
         'BACKEND': 'django.template.backends.django.DjangoTemplates',
-        'DIRS': [],
+        'DIRS': [ BASE_DIR / 'templates' ],
         'APP_DIRS': True,
         'OPTIONS': {
             'context_processors': [
@@ -123,3 +127,6 @@ STATIC_URL = '/static/'
 
 # Custom User model
 AUTH_USER_MODEL = 'app.Account'
+
+# Login redirect https://docs.djangoproject.com/en/3.1/ref/settings/
+# LOGIN_REDIRECT_URL = '/'
