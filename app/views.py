@@ -5,12 +5,18 @@ from app.forms import RegistrationForm, AccountAuthenticationForm, AccountUpdate
 
 # flash message
 # https://docs.djangoproject.com/en/3.1/ref/contrib/messages/#using-messages-in-views-and-templates
-# from django.contrib import messages
+from django.contrib import messages
 
 # from django.contrib.auth.decorators import login_required
 # @login_required(login_url='login')
 
 def home(request):
+    # messages.debug(request, 'SQL statements were executed.')
+    # messages.info(request, 'Three credits remain in your account.')
+    messages.success(request, 'Profile details updated.')
+    # messages.warning(request, 'Your account expires in three days.')
+    messages.error(request, 'Document deleted.', extra_tags='danger')
+
     return render(request, 'app/home.html', {})
 
 def registration_view(request):
