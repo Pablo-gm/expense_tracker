@@ -2,7 +2,7 @@ from django import forms
 from django.contrib.auth.forms import UserCreationForm
 from django.contrib.auth import authenticate
 
-from app.models import Account
+from app.models import Account, Budget
 
 
 class RegistrationForm(UserCreationForm):
@@ -51,3 +51,9 @@ class AccountUpdateForm(forms.ModelForm):
         except Account.DoesNotExist:
             return username
         raise forms.ValidationError('Username {} is already in use.'.format(username))
+
+# Budget forms
+class BudgetForm(forms.ModelForm):
+    class Meta:
+        model = Budget
+        fields = '__all__'

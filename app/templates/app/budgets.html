@@ -1,0 +1,64 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block content %}
+<div class="row">
+    <div class="col-12">
+        <h1>Budgets</h1>
+    </div>
+</div>
+
+<div class="row justify-content-center">
+    <div class="col-lg-4">
+        <form  method="post" action="{% url 'create_budget' %}">
+            {% csrf_token %}
+
+        
+            <h1 class="h3 mb-3 font-weight-normal">Create Budget</h1>
+            {{ create_budget_form }}
+
+            {% for field in create_budget_form %}
+            <p>
+                {% for error in field.errors %}
+            <p style="color: red">{{ error }}</p>
+            {% endfor %}
+            </p>
+            {% endfor %}
+            {% if create_budget_form.non_field_errors %}
+            <div style="color: red">
+                <p>{{create_budget_form.non_field_errors}}</p>
+            </div>
+        
+            {% endif %}
+        
+            <button class="btn btn-lg btn-primary btn-block" type="submit">Create</button>
+        
+        </form>
+    </div>
+</div>
+
+<div class="row">
+    <div class="col-12">
+        <table class="table">
+            <thead>
+                <tr>
+                    <th>Año</th>
+                    <th>Mes</th>
+                    <th>Usuario</th>
+                    <th>Balance</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for budget in budgets %}
+                <tr>
+                    <td>{{ budget.year }}</td>
+                    <td>{{ budget.month }}</td>
+                    <td>{{ budget.user }}</td>
+                    <td>{{ budget.year }}</td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+</div>
+{% endblock content %}

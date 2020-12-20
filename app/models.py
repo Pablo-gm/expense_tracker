@@ -1,3 +1,5 @@
+import datetime
+from django.conf import settings
 from django.db import models
 from django.contrib.auth.models import BaseUserManager, AbstractBaseUser
 
@@ -59,3 +61,29 @@ class Account(AbstractBaseUser):
     # Does this user have permission to view this app? (ALWAYS YES FOR SIMPLICITY)
     def has_module_perms(self, app_label):
         return True
+
+
+
+# Budget model
+class Budget(models.Model):
+
+    # Month options
+    class Months(models.IntegerChoices):
+        JANUARY = 1, 'January'
+        FEBRUARY = 2, 'February'
+        MARCH = 3, 'March'
+        APRIL = 4, 'April'
+        MAY = 5, 'May'
+        JUNE = 6, 'June'
+        JULY = 7, 'July'
+        AUGUST = 8, 'August'
+        SEPTEMBER = 9, 'September'
+        OCTOBER = 10, 'October'
+        NOVEMBER = 11, 'November'
+        DECEMBER = 12, 'December'
+
+    YEAR_CHOICES = [(y,y) for y in range(2018, datetime.date.today().year+1)]
+
+    user = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.CASCADE)
+    year = models.IntegerField(choices=YEAR_CHOICES, default=datetime.datetime.now().year)
+    month = models.IntegerField(choices=Months.choices, default=Months.choices[datetime.datetime.now().month - 1])

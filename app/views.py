@@ -1,11 +1,14 @@
 from django.shortcuts import render, redirect
 from django.contrib.auth import login, authenticate, logout
+from django.contrib.auth.decorators import login_required
 
-from app.forms import RegistrationForm, AccountAuthenticationForm, AccountUpdateForm
+from app.forms import RegistrationForm, AccountAuthenticationForm, AccountUpdateForm, BudgetForm
 
 # flash message
 # https://docs.djangoproject.com/en/3.1/ref/contrib/messages/#using-messages-in-views-and-templates
 from django.contrib import messages
+
+from .models import Budget
 
 # from django.contrib.auth.decorators import login_required
 # @login_required(login_url='login')
@@ -13,9 +16,13 @@ from django.contrib import messages
 def home(request):
     # messages.debug(request, 'SQL statements were executed.')
     # messages.info(request, 'Three credits remain in your account.')
-    messages.success(request, 'Profile details updated.')
+    # messages.success(request, 'Profile details updated.')
     # messages.warning(request, 'Your account expires in three days.')
-    messages.error(request, 'Document deleted.', extra_tags='danger')
+    # messages.error(request, 'Document deleted.', extra_tags='danger')
+
+    user = request.user
+    if user.is_authenticated: 
+        return redirect("budgets")
 
     return render(request, 'app/home.html', {})
 
@@ -103,3 +110,35 @@ def account_view(request):
 
 def must_authenticate_view(request):
     return render(request, 'app/must_authenticate.html', {})
+
+@login_required(login_url='must_authenticate')
+def budgets(request):
+    context = {}
+
+    budgets = Budget.objects.filter(user=request.user)
+    context['budgets'] = budgets
+
+    form = BudgetForm()
+    context['create_budget_form'] = form
+
+    return render(request, 'app/budgets.html', context)
+
+
+@login_required(login_url='must_authenticate')
+def create_budget(request):
+    context = {}
+
+    form = BudgetForm()
+
+    if request.method == 'POST':
+        form = BudgetForm(request.POST)
+
+        if form.is_valid():
+            form.save()
+            messages.success(request, 'Budget created')
+            return redirect('budgets')
+        else:
+            messages.error(request, 'Form is invalid')
+
+    #context['create_budget_form'] = form
+    return redirect("budgets")
