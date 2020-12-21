@@ -56,4 +56,5 @@ class AccountUpdateForm(forms.ModelForm):
 class BudgetForm(forms.ModelForm):
     class Meta:
         model = Budget
-        fields = '__all__'
+        fields = ('year', 'month', )
+        #fields = '__all__'

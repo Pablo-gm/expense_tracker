@@ -87,3 +87,9 @@ class Budget(models.Model):
     user = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.CASCADE)
     year = models.IntegerField(choices=YEAR_CHOICES, default=datetime.datetime.now().year)
     month = models.IntegerField(choices=Months.choices, default=Months.choices[datetime.datetime.now().month - 1])
+    balance = models.DecimalField(max_digits=10, decimal_places=2, default=0.00)
+
+    class Meta:
+        constraints = [
+            models.UniqueConstraint(fields=['user','year','month'], name='unique_monthly_budget'),
+            ]

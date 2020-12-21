@@ -115,12 +115,24 @@ def must_authenticate_view(request):
 def budgets(request):
     context = {}
 
-    budgets = Budget.objects.filter(user=request.user)
+    budget_dic = {}
+    budget_list = []
+    temp_year = 0
+
+    budgets = Budget.objects.filter(user=request.user).order_by('-year', '-month')
     context['budgets'] = budgets
+
+    if budgets:
+        temp_year = budgets[0]
+
+        for budget in budgets:
+            if budget.year is not temp_year:
+                budget_dic[budget.year] = 1
+
 
     form = BudgetForm()
     context['create_budget_form'] = form
-
+    context['budget_json'] = budget_dic
     return render(request, 'app/budgets.html', context)
 
 
@@ -134,8 +146,15 @@ def create_budget(request):
         form = BudgetForm(request.POST)
 
         if form.is_valid():
-            form.save()
-            messages.success(request, 'Budget created')
+            try:
+                obj = form.save(commit=False)
+                usr = request.user
+                obj.user = usr
+                obj.save()
+                messages.success(request, 'Budget created')
+            except:
+                messages.error(request, 'Invalid data, missing arguments or montlhy budger already exist')
+
             return redirect('budgets')
         else:
             messages.error(request, 'Form is invalid')
