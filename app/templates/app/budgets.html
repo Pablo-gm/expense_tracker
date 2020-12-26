@@ -10,13 +10,13 @@
 
 <div class="row justify-content-center">
     <div class="col-lg-4">
-        <form  method="post" action="{% url 'create_budget' %}">
+        <form method="post" action="{% url 'create_budget' %}">
             {% csrf_token %}
             <div class="mb-3">
                 <label for="year" class="form-label">Year</label>
                 <select id="year" name="year" class="form-select">
                     {% for val, display in create_budget_form.fields.year.choices %}
-                    <option value="{{ val }}" {% if val == create_budget_form.fields.year.initial %} selected {% endif %}>{{display}}</option>
+                        <option value="{{ val }}" {% if val == create_budget_form.fields.year.initial %} selected {% endif %}>{{display}}</option>
                     {% endfor %}
                 </select>
             </div>
@@ -28,9 +28,10 @@
                     <option value="{{ val }}" {% if val == create_budget_form.fields.month.initial.0 %} selected {% endif %}>{{display}}</option>
                     {% endfor %}
                 </select>
+                <div id="monthHelp" class="form-text d-none">Monthly budget already exist.</div>
             </div>
 
-            <button class="btn btn-lg btn-primary btn-block" type="submit">Create</button>
+            <button class="btn btn-lg btn-primary btn-block" type="submit" id="submitButton" disabled>Create</button>
         </form>
     </div>
 </div>
@@ -44,6 +45,7 @@
                     <th>Mes</th>
                     <th>Usuario</th>
                     <th>Balance</th>
+                    <th>Actions</th>
                 </tr>
             </thead>
             <tbody>
@@ -53,6 +55,7 @@
                     <td>{{ budget.month }}</td>
                     <td>{{ budget.user }}</td>
                     <td>{{ budget.balance }}</td>
+                    <td><a href="{% url 'view_budget' budget.id %}">View</a></td>
                 </tr>
                 {% endfor %}
             </tbody>
@@ -60,10 +63,56 @@
     </div>
 </div>
 
-{{ budget_json|json_script:"budget-js" }}
+{{ budget_json|json_script:"budget-json" }}
 
 <script>
-    const budgets = JSON.parse(document.getElementById('budget-json').textContent);
+    var budgets = JSON.parse(document.getElementById('budget-json').textContent);
+    let year = document.getElementById('year');
+    let month = document.getElementById('month');
+    let monthHelp = document.getElementById('monthHelp');
+    let submitBtn = document.getElementById('submitButton');
+
+    year.addEventListener('change', function(){
+        disableMonths();
+        enableSubmit();
+    });
+    month.addEventListener('change', enableSubmit);
+
+    disableMonths();
+    enableSubmit();
+
+    function disableMonths() {
+        let budgetMonths = budgets[year.value] ? budgets[year.value] : 0;
+        let optionIndex = budgetMonths.length - 1;
+
+        for (let i = 0; i < month.children.length; i++) {
+            if(budgetMonths.length && optionIndex >= 0 && budgetMonths[optionIndex] == month[i].value) {
+                month.options[i].disabled = true;
+                optionIndex--;
+            }else{
+                month.options[i].disabled = false;
+            }
+        }
+    }
+
+    function enableSubmit(){
+        let budgetMonths = budgets[year.value] ? budgets[year.value] : [];
+
+        if( budgetMonths.length ){
+            for (let i = 0; i < budgetMonths.length; i++) {
+                if (budgetMonths[i] == month.value){
+                    monthHelp.classList.remove('d-none');
+                    submitBtn.disabled = true;
+                    return;
+                }
+            }
+            monthHelp.classList.add('d-none');
+        }
+        
+        submitBtn.disabled = false;
+        return;
+    }
+
 </script>
 
 {% endblock content %}

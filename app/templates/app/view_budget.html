@@ -1,0 +1,14 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block content %}
+
+    <h1>Budget</h1>
+    {{ budget.year }} - {{ budget.month }}
+
+    <form  method="POST" action="{% url 'delete_budget' budget.id %}">
+        {% csrf_token %}
+        <button id="delete" type="submit" class="btn btn-danger">Delete budget</button>
+    </form>
+
+{% endblock content %}

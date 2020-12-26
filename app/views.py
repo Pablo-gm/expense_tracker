@@ -1,6 +1,7 @@
 from django.shortcuts import render, redirect
 from django.contrib.auth import login, authenticate, logout
 from django.contrib.auth.decorators import login_required
+from django.http import HttpResponse, Http404
 
 from app.forms import RegistrationForm, AccountAuthenticationForm, AccountUpdateForm, BudgetForm
 
@@ -123,18 +124,30 @@ def budgets(request):
     context['budgets'] = budgets
 
     if budgets:
-        temp_year = budgets[0]
+        temp_year = budgets[0].year
 
         for budget in budgets:
+            budget_list.append(budget.month)
             if budget.year is not temp_year:
-                budget_dic[budget.year] = 1
-
+                budget_dic[budget.year] = budget_list
+                budget_list = []
 
     form = BudgetForm()
     context['create_budget_form'] = form
     context['budget_json'] = budget_dic
     return render(request, 'app/budgets.html', context)
 
+@login_required(login_url='must_authenticate')
+def view_budget(request, budget_id):
+    context = {}
+
+    try:
+        budget = Budget.objects.get(user=request.user, id=budget_id)
+    except Budget.DoesNotExist:
+        raise Http404("Budget not found...")
+
+    context['budget'] = budget
+    return render(request, 'app/view_budget.html', context)
 
 @login_required(login_url='must_authenticate')
 def create_budget(request):
@@ -161,3 +174,24 @@ def create_budget(request):
 
     #context['create_budget_form'] = form
     return redirect("budgets")
+
+@login_required(login_url='must_authenticate')
+def delete_budget(request, budget_id):
+    try:
+        budget = Budget.objects.get(user=request.user, id=budget_id)
+    except Budget.DoesNotExist:
+        raise Http404("Budget not found...")
+
+    if request.method == 'POST':
+        try:
+            budget.delete()
+            messages.success(request, 'Budget deleted')
+        except:
+            messages.error(request, 'Budget already deleted.')
+            
+    
+    return redirect('budgets')
+
+def custom_404(request, exception):
+    return render(request, "404.html", exception)
+

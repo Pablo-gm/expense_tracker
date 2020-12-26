@@ -20,5 +20,7 @@ urlpatterns = [
 
     # Budgets views
     path('budgets/', views.budgets, name="budgets"),
+    path('view_budget/<str:budget_id>', views.view_budget, name="view_budget"),
+    path('delete_budget/<str:budget_id>', views.delete_budget, name="delete_budget"),
     path('create_budget/', views.create_budget, name="create_budget"),
 ]

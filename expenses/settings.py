@@ -30,7 +30,7 @@ SECRET_KEY = 'u^)g0guxoqf=av&lmyq(da2a!29^ex5*0z!(8&wg!0@67@fadi'
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = []
+ALLOWED_HOSTS = ['127.0.0.1']
 
 # Password reset
 if DEBUG:
@@ -138,3 +138,6 @@ AUTH_USER_MODEL = 'app.Account'
 
 # Login redirect https://docs.djangoproject.com/en/3.1/ref/settings/
 # LOGIN_REDIRECT_URL = '/'
+
+# Custom 404 error template
+handler404 = 'app.views.custom_404' #new 
