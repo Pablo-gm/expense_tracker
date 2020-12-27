@@ -63,6 +63,7 @@ class Account(AbstractBaseUser):
         return True
 
 
+DEFAULT_USER_ID = 1
 
 # Budget model
 class Budget(models.Model):
@@ -133,4 +134,5 @@ class Expense(models.Model):
     description = models.CharField(max_length=120, unique=True)
     amount = models.DecimalField(max_digits=10, decimal_places=2, default=0.00)
     date_time = models.DateTimeField(null=True, blank=True)
+    user = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.CASCADE, default=DEFAULT_USER_ID)
 

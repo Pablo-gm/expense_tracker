@@ -11,6 +11,8 @@ from django.contrib import messages
 
 from .models import Budget, Expense
 
+import datetime
+
 # from django.contrib.auth.decorators import login_required
 # @login_required(login_url='login')
 
@@ -203,15 +205,20 @@ def create_expense(request, budget_id):
     if request.method == 'POST':
         form = ExpenseForm(request.POST)
 
-        if form.is_valid():
-            try:
-                budget = Budget.objects.get(user=request.user, id=budget_id)
-            except Budget.DoesNotExist:
-                raise Http404("Budget not found...")
+        try:
+            budget = Budget.objects.get(user=request.user, id=budget_id)
+        except Budget.DoesNotExist:
+            raise Http404("Budget not found...")
 
+        if form.is_valid():
             try:
                 obj = form.save(commit=False)
                 obj.budget = budget
+
+                # If datetime is not fit for the budget
+                if obj.date_time.year != budget.year or obj.date_time.month != budget.month:
+                    obj.date_time = datetime.datetime(budget.year, budget.month, 1)
+
                 obj.save()
 
                 if obj.expense_type == 'INC':
@@ -222,13 +229,65 @@ def create_expense(request, budget_id):
                 budget.save()
                 messages.success(request, 'Expense added')
             except:
-                messages.error(request, 'Invalid data')
+                messages.error(request, 'Expense not recorded.')
 
             return redirect('view_budget', budget_id=budget.id)
         else:
-            messages.error(request, 'Invalid data')
+            messages.error(request, 'Invalid data.')
 
+    if budget:
+        return redirect('view_budget', budget_id=budget.id)
+        
     return redirect("budgets")
+
+@login_required(login_url='must_authenticate')
+def edit_expense(request, expense_id):
+    context = {}
+
+    if request.POST:
+        pass
+    else:
+        try:
+            expense = Expense.objects.get(user=request.user, id=expense_id)
+            context['expense'] = expense
+        except Expense.DoesNotExist:
+            raise Http404("Expense not found...")
+
+        context['expense_form'] = ExpenseForm(instance=expense)
+
+    return render(request, 'app/edit_expense.html', context)
+
+@login_required(login_url='must_authenticate')
+def delete_expense(request, expense_id):
+    budget_id = 0
+
+    if request.method == 'POST':
+
+        try:
+            expense = Expense.objects.get(user=request.user, id=expense_id)
+        except Expense.DoesNotExist:
+            raise Http404("Expense not found...")
+
+        try:
+            budget_id = expense.budget.id
+            budget = expense.budget
+
+            if expense.expense_type == 'INC':
+                budget.balance = budget.balance + expense.amount
+            else:
+                budget.balance = budget.balance - expense.amount
+
+            budget.save()
+            expense.delete()
+
+            messages.success(request, 'Expense deleted')
+        except:
+            messages.error(request, 'Expense already deleted.')
+            
+    if budget_id != 0:
+        return redirect('view_budget', budget_id=budget_id)
+
+    return redirect('budgets')
 
 def custom_404(request, exception):
     return render(request, "404.html", exception)
