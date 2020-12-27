@@ -4,11 +4,43 @@
 {% block content %}
 
     <h1>Budget</h1>
-    {{ budget.year }} - {{ budget.month }}
+    {{ budget.year }} - {{ budget.month }} ----> {{ budget.balance }}
+
+    {% if expenses %}
+    <div class="row">
+        <div class="col">
+            <table>
+                <thead>
+                    <tr>
+                        <th>Expense</th>
+                        <th>Type</th>
+                        <th>Amount</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for expense in expenses %}
+                    <tr>
+                        <td>{{ expense.description }}</td>
+                        <td>{{ expense.expense_type }}</td>
+                        <td>{{ expense.amount }}</td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+    </div>
+    {% endif %}
 
     <form  method="POST" action="{% url 'delete_budget' budget.id %}">
         {% csrf_token %}
         <button id="delete" type="submit" class="btn btn-danger">Delete budget</button>
     </form>
+    <form method="post" action="{% url 'create_expense' budget.id %}">
+        {% csrf_token %}
+        {{ expense_form }}
+
+        <button class="btn btn-lg btn-primary btn-block" type="submit" id="submitButton" >Create</button>
+    </form>
+
 
 {% endblock content %}

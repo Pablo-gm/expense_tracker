@@ -93,3 +93,44 @@ class Budget(models.Model):
         constraints = [
             models.UniqueConstraint(fields=['user','year','month'], name='unique_monthly_budget'),
             ]
+
+# Expenses model
+class Expense(models.Model):
+
+    INCOME = 'INC'
+    HOUSING = 'HOU'
+    TRANSPORTATION = 'TRA'
+    FOOD = 'FOO'
+    UTILITIES = 'UTL'
+    MEDICAL = 'MED'
+    SAVINGS = 'SAV'
+    PERSONAL = 'PER'
+    ENTERTAINMENT = 'ENT'
+    EDUCATION = 'EDU'
+    GIFTS = 'GIF'
+
+    EXPENSE_CHOICES = [
+        (INCOME, 'Income'),
+        (HOUSING, 'Housing'),
+        (TRANSPORTATION, 'Transportation'),
+        (FOOD, 'Food & Groceries'),
+        (UTILITIES, 'Utilities'),
+        (MEDICAL, 'Medical & Insurance'),
+        (SAVINGS, 'Savings'),
+        (PERSONAL, 'Personal'),
+        (ENTERTAINMENT, 'Entertainment'),
+        (EDUCATION, 'Education'),
+        (GIFTS, 'Gifts & Donations'),
+    ]
+
+    expense_type = models.CharField(
+        max_length=3,
+        choices=EXPENSE_CHOICES,
+        default=FOOD,
+    )
+
+    budget = models.ForeignKey(Budget, on_delete=models.CASCADE)
+    description = models.CharField(max_length=120, unique=True)
+    amount = models.DecimalField(max_digits=10, decimal_places=2, default=0.00)
+    date_time = models.DateTimeField(null=True, blank=True)
+

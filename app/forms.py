@@ -2,7 +2,7 @@ from django import forms
 from django.contrib.auth.forms import UserCreationForm
 from django.contrib.auth import authenticate
 
-from app.models import Account, Budget
+from app.models import Account, Budget, Expense
 
 
 class RegistrationForm(UserCreationForm):
@@ -58,3 +58,10 @@ class BudgetForm(forms.ModelForm):
         model = Budget
         fields = ('year', 'month', )
         #fields = '__all__'
+
+class ExpenseForm(forms.ModelForm):
+    date_time = forms.DateTimeField(input_formats=["%Y-%m-%d %H:%M"])
+
+    class Meta:
+        model = Expense
+        fields = ('expense_type', 'description', 'amount')

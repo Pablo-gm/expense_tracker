@@ -3,13 +3,13 @@ from django.contrib.auth import login, authenticate, logout
 from django.contrib.auth.decorators import login_required
 from django.http import HttpResponse, Http404
 
-from app.forms import RegistrationForm, AccountAuthenticationForm, AccountUpdateForm, BudgetForm
+from app.forms import RegistrationForm, AccountAuthenticationForm, AccountUpdateForm, BudgetForm, ExpenseForm
 
 # flash message
 # https://docs.djangoproject.com/en/3.1/ref/contrib/messages/#using-messages-in-views-and-templates
 from django.contrib import messages
 
-from .models import Budget
+from .models import Budget, Expense
 
 # from django.contrib.auth.decorators import login_required
 # @login_required(login_url='login')
@@ -147,6 +147,8 @@ def view_budget(request, budget_id):
         raise Http404("Budget not found...")
 
     context['budget'] = budget
+    context['expenses'] = Expense.objects.filter(budget=budget)
+    context['expense_form'] = ExpenseForm()
     return render(request, 'app/view_budget.html', context)
 
 @login_required(login_url='must_authenticate')
@@ -191,6 +193,42 @@ def delete_budget(request, budget_id):
             
     
     return redirect('budgets')
+
+@login_required(login_url='must_authenticate')
+def create_expense(request, budget_id):
+    context = {}
+
+    form = ExpenseForm()
+
+    if request.method == 'POST':
+        form = ExpenseForm(request.POST)
+
+        if form.is_valid():
+            try:
+                budget = Budget.objects.get(user=request.user, id=budget_id)
+            except Budget.DoesNotExist:
+                raise Http404("Budget not found...")
+
+            try:
+                obj = form.save(commit=False)
+                obj.budget = budget
+                obj.save()
+
+                if obj.expense_type == 'INC':
+                    budget.balance = budget.balance + obj.amount
+                else:
+                    budget.balance = budget.balance - obj.amount
+
+                budget.save()
+                messages.success(request, 'Expense added')
+            except:
+                messages.error(request, 'Invalid data')
+
+            return redirect('view_budget', budget_id=budget.id)
+        else:
+            messages.error(request, 'Invalid data')
+
+    return redirect("budgets")
 
 def custom_404(request, exception):
     return render(request, "404.html", exception)
