@@ -151,6 +151,7 @@ def view_budget(request, budget_id):
     context['budget'] = budget
     context['expenses'] = Expense.objects.filter(budget=budget)
     context['expense_form'] = ExpenseForm()
+    
     return render(request, 'app/view_budget.html', context)
 
 @login_required(login_url='must_authenticate')
@@ -214,6 +215,7 @@ def create_expense(request, budget_id):
             try:
                 obj = form.save(commit=False)
                 obj.budget = budget
+                obj.user = request.user
 
                 # If datetime is not fit for the budget
                 if obj.date_time.year != budget.year or obj.date_time.month != budget.month:
@@ -244,15 +246,62 @@ def create_expense(request, budget_id):
 def edit_expense(request, expense_id):
     context = {}
 
-    if request.POST:
-        pass
-    else:
-        try:
-            expense = Expense.objects.get(user=request.user, id=expense_id)
-            context['expense'] = expense
-        except Expense.DoesNotExist:
-            raise Http404("Expense not found...")
+    try:
+        expense = Expense.objects.get(user=request.user, id=expense_id)
+        context['expense'] = expense
+    except Expense.DoesNotExist:
+        raise Http404("Expense not found...")
 
+    if request.POST:
+        form = ExpenseForm(request.POST)
+
+        if form.is_valid():
+            obj = {}
+            obj['date_time'] = form.cleaned_data['date_time']
+            obj['expense_type'] = form.cleaned_data['expense_type']
+            obj['amount'] = form.cleaned_data['amount']
+            obj['description'] = form.cleaned_data['description']
+
+            try:
+                #obj = form.save(commit=False, instance=expense)
+                budget = Budget.objects.get(user=request.user, id=expense.budget.id)
+            except Budget.DoesNotExist:
+                raise Http404("Budget not found...")
+
+            try:
+                # If datetime is not fit for the budget
+                if obj['date_time'].year != budget.year or obj['date_time'].month != budget.month:
+                    messages.info(request, 'Invalid date')
+                else:
+                    expense.date_time = obj['date_time']
+
+                if expense.expense_type != obj['expense_type']:
+                    expense.expense_type = obj['expense_type']
+                    if obj['expense_type'] == 'INC':
+                        budget.balance = budget.balance + obj['amount'] + expense.amount
+                    else:
+                        budget.balance = budget.balance - obj['amount'] + expense.amount
+                elif expense.amount != obj['amount']:
+                    if obj['expense_type'] == 'INC':
+                        budget.balance = budget.balance + obj['amount'] - expense.amount
+                    else:
+                        budget.balance = budget.balance - obj['amount'] + expense.amount
+                
+                expense.amount = obj['amount']
+                expense.description = obj['description']
+                expense.save()
+                budget.save()
+                messages.success(request, 'Expense updated')
+            except:
+                messages.error(request, 'Expense not updated')
+
+            if budget:
+                return redirect('view_budget', budget_id=budget.id)
+        else:
+            context['expense_form'] = form
+            messages.error(request, 'Invalid data')
+
+    else:
         context['expense_form'] = ExpenseForm(instance=expense)
 
     return render(request, 'app/edit_expense.html', context)

@@ -28,12 +28,6 @@
                         <td>{{ expense.amount }}</td>
                         <td>{{ expense.date_time }}</td>
                         <td>{{ expense.user }}</td>
-                        <td>
-                            <form  method="POST" action="{% url 'delete_expense' expense.id %}">
-                                {% csrf_token %}
-                                <button id="delete" type="submit" class="btn btn-danger">Delete Expense</button>
-                            </form>
-                        </td>
                         <td><a href="{% url 'edit_expense' expense.id %}">Edit</a></td>
                     </tr>
                     {% endfor %}
@@ -43,13 +37,41 @@
     </div>
     {% endif %}
 
-    <form  method="POST" action="{% url 'delete_budget' budget.id %}">
+    <form  method="POST" action="{% url 'delete_budget' budget.id %}" class="my-3">
         {% csrf_token %}
         <button id="delete" type="submit" class="btn btn-danger">Delete budget</button>
     </form>
     <form method="post" action="{% url 'create_expense' budget.id %}">
         {% csrf_token %}
-        {{ expense_form }}
+
+        <div class="mb-3">
+            <label for="expense_type" class="form-label">Category</label>
+            <select id="expense_type" name="expense_type" class="form-select {% if expense_form.expense_type.errors %}is-invalid{% endif %}">
+                {% for val, display in expense_form.fields.expense_type.choices %}
+                    <option value="{{ val }}" {% if val == expense_form.fields.expense_type.initial %} selected {% endif %}>{{display}}</option>
+                {% endfor %}
+            </select>
+            <div id="expense_typeHelp" class="invalid-feedback">{{ expense_form.expense_type.errors }}</div>
+        </div>
+
+        <div class="mb-3">
+            <label for="description" class="form-label">Description</label>
+            <input type="text" name="description" class="form-control {% if expense_form.description.errors %}is-invalid{% endif %}" maxlength="120" required="" id="description">
+            <div id="descriptionHelp" class="invalid-feedback">{{ expense_form.description.errors }}</div>
+        </div>
+
+        <div class="mb-3">
+            <label for="amount" class="form-label">Amount</label>
+            <input type="number" name="amount" class="form-control {% if expense_form.amount.errors %}is-invalid{% endif %}" value="0.0" step="0.01" required="" id="amount">
+            <div id="amountHelp" class="invalid-feedback">{{ expense_form.amount.errors }}</div>
+        </div>
+
+        <div class="mb-3">
+            <label for="date_time" class="form-label">Date</label>
+            <input type="text" name="date_time" class="form-control {% if expense_form.date_time.errors %}is-invalid{% endif %}"  required="" id="date_time">
+            <div id="date_timeHelp" class="invalid-feedback">{{ expense_form.date_time.errors }}</div>
+        </div>
+
 
         <button class="btn btn-lg btn-primary btn-block" type="submit" id="submitButton" >Create</button>
     </form>
