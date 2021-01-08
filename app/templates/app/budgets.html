@@ -4,64 +4,111 @@
 {% block content %}
 <div class="row">
     <div class="col-12">
-        <h1>Budgets</h1>
+        <nav aria-label="breadcrumb" class="mt-3">
+            <ol class="breadcrumb">
+                <li class="breadcrumb-item active" aria-current="page">Budgets</li>
+            </ol>
+        </nav>
     </div>
 </div>
 
 <div class="row justify-content-center">
     <div class="col-lg-4">
+
+    </div>
+</div>
+
+{% regroup budgets by year as budgets_list %}
+
+
+<div class="row">
+    <div class="col-12">
+        {% if budgets_list|length > 1 %}
+        <select name="year_select" id="year_select" aria-controls="budgets_by_year">
+            <option value="all">All</option>
+            {% for by_year in budgets_list %}
+            <option value="{{ by_year.grouper }}">{{ by_year.grouper }}</option>
+            {% endfor %}
+        </select>
+        {% endif %}
+        <button class="btn btn-primary" id="newBudgetBtn"  data-bs-toggle="modal" data-bs-target="#newBudget">Add Budget</button>
+    </div>
+</div>
+
+
+<div class="row">
+    <div class="col-12" id="budgets_by_year" aria-live="polite">
+        {% for budget_year in budgets_list %}
+            <div class="card mb-3 budgets-js" data-year="{{ budget_year.grouper }}">
+                <div class="card-body">
+                    <h5>{{ budget_year.grouper }}</h5>
+                    <table class="table">
+                        <thead>
+                            <tr>
+                                <th>Budget</th>
+                                <th>User</th>
+                                <th>Balance</th>
+                                <th>Actions</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {% for budget in budget_year.list %}
+                            <tr>
+                                <td>{{ budget.month }}</td>
+                                <td>{{ budget.user }}</td>
+                                <td>{{ budget.balance }}</td>
+                                <td><a href="{% url 'view_budget' budget.id %}">View</a></td>
+                            </tr>
+                            {% endfor %}
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        {% empty %}
+            No budgets created
+        {% endfor %}
+    </div>
+</div>
+
+<!-- Modal -->
+<div class="modal fade" id="newBudget" tabindex="-1" aria-labelledby="newBudget" aria-hidden="true">
+    <div class="modal-dialog">
         <form method="post" action="{% url 'create_budget' %}">
-            {% csrf_token %}
-            <div class="mb-3">
-                <label for="year" class="form-label">Year</label>
-                <select id="year" name="year" class="form-select">
-                    {% for val, display in create_budget_form.fields.year.choices %}
-                        <option value="{{ val }}" {% if val == create_budget_form.fields.year.initial %} selected {% endif %}>{{display}}</option>
-                    {% endfor %}
-                </select>
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title">Create budget</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                    {% csrf_token %}
+                    <div class="mb-3">
+                        <label for="year" class="form-label">Year</label>
+                        <select id="year" name="year" class="form-select">
+                            {% for val, display in create_budget_form.fields.year.choices %}
+                                <option value="{{ val }}" {% if val == create_budget_form.fields.year.initial %} selected {% endif %}>{{display}}</option>
+                            {% endfor %}
+                        </select>
+                    </div>
+                
+                    <div class="mb-3">
+                        <label for="month" class="form-label">Month</label>
+                        <select id="month" name="month" class="form-select">
+                            {% for val, display in create_budget_form.fields.month.choices %}
+                            <option value="{{ val }}" {% if val == create_budget_form.fields.month.initial.0 %} selected {% endif %}>{{display}}</option>
+                            {% endfor %}
+                        </select>
+                        <div id="monthHelp" class="form-text d-none">Monthly budget already exist.</div>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                    <button class="btn btn-primary"  type="submit" id="submitButton" disabled>Add</button>
+                </div>
             </div>
-
-            <div class="mb-3">
-                <label for="month" class="form-label">Month</label>
-                <select id="month" name="month" class="form-select">
-                    {% for val, display in create_budget_form.fields.month.choices %}
-                    <option value="{{ val }}" {% if val == create_budget_form.fields.month.initial.0 %} selected {% endif %}>{{display}}</option>
-                    {% endfor %}
-                </select>
-                <div id="monthHelp" class="form-text d-none">Monthly budget already exist.</div>
-            </div>
-
-            <button class="btn btn-lg btn-primary btn-block" type="submit" id="submitButton" disabled>Create</button>
         </form>
     </div>
 </div>
 
-<div class="row">
-    <div class="col-12">
-        <table class="table">
-            <thead>
-                <tr>
-                    <th>Año</th>
-                    <th>Mes</th>
-                    <th>Usuario</th>
-                    <th>Balance</th>
-                    <th>Actions</th>
-                </tr>
-            </thead>
-            <tbody>
-                {% for budget in budgets %}
-                <tr>
-                    <td>{{ budget.year }}</td>
-                    <td>{{ budget.month }}</td>
-                    <td>{{ budget.user }}</td>
-                    <td>{{ budget.balance }}</td>
-                    <td><a href="{% url 'view_budget' budget.id %}">View</a></td>
-                </tr>
-                {% endfor %}
-            </tbody>
-        </table>
-    </div>
-</div>
 
 {{ budget_json|json_script:"budget-json" }}
 
@@ -71,6 +118,13 @@
     let month = document.getElementById('month');
     let monthHelp = document.getElementById('monthHelp');
     let submitBtn = document.getElementById('submitButton');
+
+    {% if budgets_list|length > 1 %}
+    let budget_cards = document.querySelectorAll('.budgets-js')
+    let year_select = document.getElementById('year_select');
+
+    year_select.addEventListener('change', updateBudgetCards)
+    {% endif %}
 
     year.addEventListener('change', function(){
         disableMonths();
@@ -111,6 +165,20 @@
         
         submitBtn.disabled = false;
         return;
+    }
+
+    function updateBudgetCards(){
+        if(year_select.value == 'all'){
+            for (let i = 0; i < budget_cards.length; i++) {
+                budget_cards[i].classList.remove('d-none');
+            }
+        }else{
+            for (let i = 0; i < budget_cards.length; i++) {
+                budget_cards[i].classList.add('d-none');
+            }
+            console.log(year_select.value);
+            document.querySelector("[data-year='" + year_select.value + "']").classList.remove('d-none');
+        }
     }
 
 </script>
