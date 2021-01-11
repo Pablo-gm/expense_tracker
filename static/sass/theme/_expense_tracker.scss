@@ -1,0 +1,60 @@
+// Colors
+$body-bg: #f8fbfd;
+
+$white:    #fff !default;
+$gray-100: #edf6f9 !default;
+$gray-200: #d5dde0 !default;
+$gray-300: #bec5c7 !default;
+$gray-400: #a6acae !default;
+$gray-500: #8e9495 !default;
+$gray-600: #777b7d !default;
+$gray-700: #5f6264 !default;
+$gray-800: #474a4b !default;
+$gray-900: #2f3132 !default;
+$black:    #000 !default;
+
+$blue:    #0d6efd !default;
+$indigo:  #6610f2 !default;
+$purple:  #5f5cff !default;
+$pink:    #d92b71 !default;
+$red:     #e02d3f !default;
+$orange:  #fd7e14 !default;
+$yellow:  #ffcd43 !default;
+$green:   #21cc76 !default;
+$teal:    #20c997 !default;
+$cyan:    #09d7e6 !default;
+
+$primary:       $purple !default;
+$secondary:     $pink !default;
+$success:       $green !default;
+$info:          $cyan !default;
+$warning:       $yellow !default;
+$danger:        $red !default;
+$light:         $gray-100 !default;
+$dark:          $gray-900 !default;
+
+// Fonts
+$font-family-sans-serif:      Inter,system-ui, -apple-system, "Segoe UI", Roboto, "Helvetica Neue", Arial, "Noto Sans", "Liberation Sans", sans-serif, "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol", "Noto Color Emoji" !default;
+
+// Headers
+$headings-font-weight:        600 !default;
+
+// Buttons
+$input-btn-padding-y:         .375rem !default;
+$input-btn-padding-x:         1rem !default;
+$input-btn-font-family:       null !default;
+
+$input-btn-border-width:      2px;
+
+// Forms
+//$input-padding-y:                       .625rem !default;
+//$input-padding-x:                       $input-btn-padding-x !default;
+//$input-border-width:                    $input-btn-border-width !default;
+
+// Labels
+$form-label-margin-bottom:              .25rem !default;
+$form-label-font-size:                  .875rem !default;
+$form-label-font-weight:                600 !default;
+
+@import "../vendors/bootstrap/bootstrap.scss";
+// sass static/sass/main.scss static/css/main.css
