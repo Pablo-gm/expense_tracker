@@ -35,6 +35,29 @@ h6{
     line-height: 1.5rem;
 }
 
+/* Buttons */
+.btn-lg{
+    line-height: 2rem;
+}
+
+/* forms */
+
+.form-text{
+    line-height: 1.25rem;
+}
+
+/* nav  */
+.navbar{
+    box-shadow: 0 0 12px rgb(47 49 50 / .2);
+}
+
+
+/* Layout */
+.main{
+    margin-top: 8rem;
+}
+
+/* Shadows */
 .shadow--1{
     box-shadow: 0px 2px 4px rgb(47 49 50 / .2);
 }
