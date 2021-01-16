@@ -2,14 +2,14 @@
 {% load static %}
 
 {% block content %}
-
+    {% load app_extras %}
     <h1>Budget</h1>
     {{ budget.year }} - {{ budget.month }} ----> {{ budget.balance }}
 
     {% if expenses %}
     <div class="row">
         <div class="col">
-            <table>
+            <table class="table">
                 <thead>
                     <tr>
                         <th>Expense</th>
@@ -24,7 +24,7 @@
                     {% for expense in expenses %}
                     <tr>
                         <td>{{ expense.description }}</td>
-                        <td>{{ expense.expense_type }}</td>
+                        <td class="category__wrapper">{{ expense.expense_type }} {% display_category expense.expense_type %}</td>
                         <td>{{ expense.amount }}</td>
                         <td>{{ expense.date_time }}</td>
                         <td>{{ expense.user }}</td>

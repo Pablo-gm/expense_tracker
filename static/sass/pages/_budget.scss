@@ -1,0 +1,23 @@
+.category{
+    &__wrapper{
+        display: flex;
+        align-items: center;
+    }
+
+    &__icon{
+        display: inline-flex;
+        justify-content: center;
+        align-items: center;
+        width: 2.5rem;
+        height: 2.5rem;
+        margin-right: .5rem;
+        border-radius: 50%;
+        background-position: center;
+        background-repeat: no-repeat;
+
+        &--EDU{
+            fill: var(--bs-purple);
+            background-color: var(--bs-purple-20);
+        }
+    }
+}

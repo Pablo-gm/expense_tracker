@@ -10631,5 +10631,40 @@ textarea.form-control-lg {
     display: none !important;
   }
 }
+:root {
+  --bs-blue-20: rgba(13, 110, 253, 0.2);
+  --bs-indigo-20: rgba(102, 16, 242, 0.2);
+  --bs-purple-20: rgba(95, 92, 255, 0.2);
+  --bs-pink-20: rgba(217, 43, 113, 0.2);
+  --bs-red-20: rgba(224, 45, 63, 0.2);
+  --bs-orange-20: rgba(253, 126, 20, 0.2);
+  --bs-yellow-20: rgba(255, 205, 67, 0.2);
+  --bs-green-20: rgba(33, 204, 118, 0.2);
+  --bs-teal-20: rgba(32, 201, 151, 0.2);
+  --bs-cyan-20: rgba(9, 215, 230, 0.2);
+  --bs-white-20: rgba(255, 255, 255, 0.2);
+  --bs-gray-20: rgba(119, 123, 125, 0.2);
+  --bs-gray-dark-20: rgba(71, 74, 75, 0.2);
+}
+
+.category__wrapper {
+  display: flex;
+  align-items: center;
+}
+.category__icon {
+  display: inline-flex;
+  justify-content: center;
+  align-items: center;
+  width: 2.5rem;
+  height: 2.5rem;
+  margin-right: 0.5rem;
+  border-radius: 50%;
+  background-position: center;
+  background-repeat: no-repeat;
+}
+.category__icon--EDU {
+  fill: var(--bs-purple);
+  background-color: var(--bs-purple-20);
+}
 
 /*# sourceMappingURL=main.css.map */

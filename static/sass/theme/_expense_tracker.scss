@@ -64,4 +64,12 @@ $form-label-font-weight:                600 !default;
 $nav-link-padding-y:                .625rem;
 
 @import "../vendors/bootstrap/bootstrap.scss";
+
+:root {
+    // Custom variable values only support SassScript inside `#{}`.
+    @each $color, $value in $colors {
+      --#{$variable-prefix}#{$color}-20: #{transparentize($value,.8)};
+    }
+}
+
 // sass static/sass/main.scss static/css/main.css
