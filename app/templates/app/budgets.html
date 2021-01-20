@@ -1,20 +1,15 @@
 {% extends 'base.html' %}
 {% load static %}
 {% load app_extras %}
+
 {% block content %}
 <div class="row">
     <div class="col-12">
-        <nav aria-label="breadcrumb" class="mt-3">
+        <nav aria-label="breadcrumb" class="">
             <ol class="breadcrumb">
                 <li class="breadcrumb-item active" aria-current="page">Budgets</li>
             </ol>
         </nav>
-    </div>
-</div>
-
-<div class="row justify-content-center">
-    <div class="col-lg-4">
-
     </div>
 </div>
 
@@ -31,7 +26,10 @@
             {% endfor %}
         </select>
         {% endif %}
-        <button class="btn btn-primary" id="newBudgetBtn"  data-bs-toggle="modal" data-bs-target="#newBudget">Add Budget</button>
+        {% if budgets_list|length > 0 %}
+        <button class="btn btn-primary mb-3" id="newBudgetBtn"  data-bs-toggle="modal" data-bs-target="#newBudget">Add Budget</button>
+        {% endif %}
+       
     </div>
 </div>
 
@@ -65,15 +63,21 @@
                 </div>
             </div>
         {% empty %}
-            No budgets created
+            <div class="text-center my-5">
+                <h4 class="mb-0">No budgets yet</h4>
+                <p>Create a budget and start tracking expenses</p>
+                <div class="mt-3">
+                    <button class="btn btn-primary" id="newBudgetBtn"  data-bs-toggle="modal" data-bs-target="#newBudget">Add Budget</button>
+                </div>
+            </div>
         {% endfor %}
     </div>
 </div>
 
 <!-- Modal -->
 <div class="modal fade" id="newBudget" tabindex="-1" aria-labelledby="newBudget" aria-hidden="true">
-    <div class="modal-dialog">
-        <form method="post" action="{% url 'create_budget' %}">
+    <div class="modal-dialog modal-sm modal-dialog-centered">
+        <form method="post" action="{% url 'create_budget' %}" class="w-100">
             <div class="modal-content">
                 <div class="modal-header">
                     <h5 class="modal-title">Create budget</h5>
@@ -90,7 +94,7 @@
                         </select>
                     </div>
                 
-                    <div class="mb-3">
+                    <div class="">
                         <label for="month" class="form-label">Month</label>
                         <select id="month" name="month" class="form-select">
                             {% for val, display in create_budget_form.fields.month.choices %}
@@ -101,8 +105,8 @@
                     </div>
                 </div>
                 <div class="modal-footer">
-                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
-                    <button class="btn btn-primary"  type="submit" id="submitButton" disabled>Add</button>
+                    <button type="button" class="btn btn-outline-dark" data-bs-dismiss="modal">Close</button>
+                    <button class="btn btn-primary"  type="submit" id="submitButton" disabled>Create</button>
                 </div>
             </div>
         </form>

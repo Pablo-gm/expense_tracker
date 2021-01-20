@@ -3,39 +3,40 @@
 
 {% block content %}
 
-<form class="form-signin" method="post">{% csrf_token %}
-    <div class="d-flex flex-column pb-3">
-        <img class="img-fluid mx-auto d-block" src="{% static 'codingwithmitch_logo.png' %}"
-            alt="Logo" width="72" height="72">
+<form class="pt-5" method="post">
+    {% csrf_token %}
+    <div class="card shadow--1 p-3 login__form mx-auto">
+        <h1 class="h3 mb-0">Login</h1>
+        <div class="mb-3 text-muted">
+            <small>Don't have an account? <a href="{% url 'register' %}">Sing up</a></small>
+        </div>
+        <div class="mb-3">
+            <label for="username" class="form-label">Username</label>
+            {% with login_form.username as field %}
+                <input type="text" name="username" id="username" class="form-control {% if field.errors %} is-invalid{% endif %}" required autofocus>
+                <div id="usernameHelp" class="form-text text-danger">
+                    {% if field.errors %}{% for error in field.errors %}{{ error }}{% endfor %}{% endif %}
+                </div>
+            {% endwith %}
+        </div>
+        <div class="mb-3">
+            <label for="password" class="form-label">Password</label>
+            {% with login_form.password as field %}
+            <input type="password" class="form-control {% if field.errors %} is-invalid{% endif %}" name="password" id="password" required>
+            <div id="passwordHelp" class="form-text text-danger">{% if field.errors %}{% for error in field.errors %}{{ error }}{% endfor %}{% endif %}</div>
+            {% endwith %}
+        </div>
+    
+        {% if login_form.non_field_errors %}
+        <div class="alert alert-danger">
+            {% for error in login_form.non_field_errors %}
+             {{error}}
+            {% endfor%}
+        </div>
+        {% endif %}
+        <button class="btn btn-primary btn-block" type="submit">Log in</button>
+        <small class="mt-2"><a href="{% url 'password_reset' %}">Forgot password?</a></small>
     </div>
-
-    <h1 class="h3 mb-3 font-weight-normal">Login</h1>
-
-    <input type="text" name="username" id="inputUsername" class="form-control" placeholder="Username" required
-        autofocus>
-
-    <input type="password" name="password" id="inputPassword" class="form-control" placeholder="Password" required>
-
-    {% for field in login_form %}
-    <p>
-        {% for error in field.errors %}
-    <p style="color: red">{{ error }}</p>
-    {% endfor %}
-    </p>
-    {% endfor %}
-    {% if login_form.non_field_errors %}
-    <div style="color: red">
-        <p>{{login_form.non_field_errors}}</p>
-    </div>
-
-    {% endif %}
-
-    <button class="btn btn-lg btn-primary btn-block" type="submit">Log in</button>
-
 </form>
 
-<div class="d-flex flex-column">
-    <a class="m-auto" href="{% url 'password_reset' %}">Reset password</a>
-</div>
-
-{% endblock content %}
+{% endblock content %} 

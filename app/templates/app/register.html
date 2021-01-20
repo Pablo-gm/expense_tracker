@@ -3,85 +3,58 @@
 
 {% block content %}
 
-<!--
-<style type="text/css">
-    .form-signin {
-        width: 100%;
-        max-width: 330px;
-        padding: 15px;
-        margin: auto;
-    }
-
-    .form-signin .form-control {
-        position: relative;
-        box-sizing: border-box;
-        height: auto;
-        padding: 10px;
-        font-size: 16px;
-    }
-
-    .form-signin .form-control:focus {
-        z-index: 2;
-    }
-
-    .form-signin input[type="email"] {
-        margin-bottom: 10px;
-        border-bottom-right-radius: 0;
-        border-bottom-left-radius: 0;
-    }
-
-    .form-signin input[type="text"] {
-        margin-bottom: 10px;
-        border-bottom-right-radius: 0;
-        border-bottom-left-radius: 0;
-    }
-
-    .form-signin input[type="password"] {
-        margin-bottom: -1px;
-        border-top-left-radius: 0;
-        border-top-right-radius: 0;
-    }
-
-    .h3 {
-        text-align: center;
-    }
-</style>
--->
-
-<form class="form-signin" method="post">{% csrf_token %}
-    <div class="d-flex flex-column pb-3">
-        <img class="img-fluid mx-auto d-block" src="{% static 'codingwithmitch_logo.png' %}"
-            alt="Codignwithmitch logo image" width="72" height="72">
+<form class="pt-5" method="post">
+    {% csrf_token %}
+    <div class="card shadow--1 p-3 login__form mx-auto">
+        <h1 class="h3 mb-0">Register an account</h1>
+        <div class="mb-3 text-muted">
+            <small>Already have an account? <a href="{% url 'login' %}">Log in</a></small>
+        </div>
+    
+        <div class="mb-3">
+            <label for="username" class="form-label">Username</label>
+            {% with registration_form.username as field %}
+                <input type="text" name="username" id="username" class="form-control {% if field.errors %} is-invalid{% endif %}" required2 autofocus>
+                <div id="usernameHelp" class="form-text text-danger">
+                    {% if field.errors %}{% for error in field.errors %}{{ error }}{% endfor %}{% endif %}
+                </div>
+            {% endwith %}
+        </div>
+        <div class="mb-3">
+            <label for="email" class="form-label">Email</label>
+            {% with registration_form.email as field %}
+                <input type="email" name="email" id="email" class="form-control {% if field.errors %} is-invalid{% endif %}" required2 autofocus>
+                <div id="usernameHelp" class="form-text text-danger">
+                    {% if field.errors %}{% for error in field.errors %}{{ error }}{% endfor %}{% endif %}
+                </div>
+            {% endwith %}
+        </div>
+        <div class="mb-3">
+            <label for="password2" class="form-label">Password</label>
+            {% with registration_form.password2 as field %}
+            <input type="password" class="form-control" name="password2" id="password2">
+                {% if field.errors %}
+                <div id="password2Help" class="form-text text-danger">{% for error in field.errors %}<div>{{ error }}</div>{% endfor %}</div>
+                {% else %}
+                <div id="password2Help" class="form-text">8 or more characters.</div>
+                {% endif %}
+            {% endwith %}
+        </div>
+        <div class="mb-3">
+            <label for="password1" class="form-label">Confirm password</label>
+            {% with registration_form.password1 as field %}
+            <input type="password" class="form-control" name="password1" id="password1">
+            <div id="password1Help" class="form-text text-danger">{% if field.errors %}{% for error in field.errors %}<div>{{ error }}</div>{% endfor %}{% endif %}</div>
+            {% endwith %}
+        </div>
+    
+        {% if registration_form.non_field_errors %}
+        <div class="alert alert-danger">
+            {{registration_form.non_field_errors}}
+        </div>
+        {% endif %}
+        <button class="btn btn-primary btn-block" type="submit">Create account</button>
     </div>
-    <h1 class="h3 mb-3 font-weight-normal">Register an account</h1>
-
-    <input type="email" name="email" id="inputEmail" class="form-control" placeholder="Email address" required
-        autofocus>
-
-    <input type="text" name="username" id="inputUsername" class="form-control" placeholder="Username" required>
-
-    <input type="password" name="password1" id="inputPassword1" class="form-control" placeholder="Password" required>
-
-    <input type="password" name="password2" id="inputPassword2" class="form-control" placeholder="Confirm password"
-        required>
-
-    {% for field in registration_form %}
-    <p>
-        {% for error in field.errors %}
-    <p style="color: red">{{ error }}</p>
-    {% endfor %}
-    </p>
-    {% endfor %}
-    {% if registration_form.non_field_errors %}
-    <div style="color: red">
-        <p>{{registration_form.non_field_errors}}</p>
-    </div>
-
-    {% endif %}
-
-    <button class="btn btn-lg btn-primary btn-block" type="submit">Register</button>
-
 </form>
-
 
 {% endblock content %}

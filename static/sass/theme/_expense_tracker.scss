@@ -36,7 +36,7 @@ $dark:          $gray-900 !default;
 // Fonts
 $font-family-sans-serif:      Inter,system-ui, -apple-system, "Segoe UI", Roboto, "Helvetica Neue", Arial, "Noto Sans", "Liberation Sans", sans-serif, "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol", "Noto Color Emoji" !default;
 $lead-font-size:              1.5rem;
-$lead-font-weight:            500;
+//$lead-font-weight:            500;
 
 
 // Headers
@@ -61,7 +61,58 @@ $form-label-font-size:                  .875rem !default;
 $form-label-font-weight:                600 !default;
 
 // Navbar
-$nav-link-padding-y:                .625rem;
+$nav-link-padding-y:                .5rem;
+$nav-link-font-weight:              500;
+//$nav-link-color:                    null !default;
+$navbar-light-color:                rgba($gray-900, .8) !default;
+$navbar-light-hover-color:          $primary;
+$navbar-light-active-color:         $primary;
+
+$navbar-brand-height:               1.5rem;
+$navbar-brand-padding-y:            .75rem;
+
+// Cards
+$card-border-width:                 0;
+
+// Alerts
+$alert-padding-y:                   .75rem;
+//$alert-padding-x:                   $spacer !default;
+$alert-margin-bottom:               1rem !default;
+$alert-border-width:                0;
+
+$alert-bg-scale:                    -88% !default;
+$alert-border-scale:                -70% !default;
+$alert-color-scale:                 40% !default;
+
+//$alert-dismissible-padding-r:       $alert-padding-x * 3 !default; // 3x covers width of x plus default padding on either side
+
+// Dropdown
+$dropdown-padding-y:                0;
+$dropdown-spacer:                   .25rem;
+//$dropdown-font-size:                $font-size-base !default;
+//$dropdown-color:                    $body-color !default;
+$dropdown-border-width:             0;
+$dropdown-inner-border-radius:      .25rem;
+// Manually unless enable-shadows
+//$dropdown-box-shadow:               0px 4px 8px rgb(47 49 50 / .6);
+
+//$dropdown-link-color:               $gray-900 !default;
+$dropdown-link-hover-color:         $primary;
+$dropdown-link-hover-bg:            rgba($primary, .12);
+
+$dropdown-link-active-color:        $white;
+$dropdown-link-active-bg:           $primary;
+
+$dropdown-item-padding-y:           .5rem;
+
+// Modal
+//$modal-footer-margin-between:       0 .5rem;
+$modal-content-border-width:        0;
+
+$modal-sm:                          20rem;
+$modal-md:                          35rem;
+$modal-lg:                          50rem;
+$modal-xl:                          65rem;
 
 @import "../vendors/bootstrap/bootstrap.scss";
 
