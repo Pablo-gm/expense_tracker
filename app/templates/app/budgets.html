@@ -1,6 +1,7 @@
 {% extends 'base.html' %}
 {% load static %}
 {% load app_extras %}
+{% load humanize %}
 
 {% block content %}
 <div class="row">
@@ -14,10 +15,8 @@
 </div>
 
 {% regroup budgets by year as budgets_list %}
-
-
-<div class="row">
-    <div class="col-12">
+<div class="row justify-content-center">
+    <div class="col-lg-6">
         {% if budgets_list|length > 1 %}
         <select name="year_select" id="year_select" aria-controls="budgets_by_year">
             <option value="all">All</option>
@@ -34,28 +33,29 @@
 </div>
 
 
-<div class="row">
-    <div class="col-12" id="budgets_by_year" aria-live="polite">
+<div class="row justify-content-center">
+    <div class="col-lg-6" id="budgets_by_year" aria-live="polite">
         {% for budget_year in budgets_list %}
-            <div class="card mb-3 budgets-js" data-year="{{ budget_year.grouper }}">
-                <div class="card-body">
-                    <h5>{{ budget_year.grouper }}</h5>
-                    <table class="table">
+            <div class="budgets-js" data-year="{{ budget_year.grouper }}">
+                <h5>{{ budget_year.grouper }}</h5>
+                <div class="card mb-3 shadow--1">
+                    <table class="table mb-0">
                         <thead>
                             <tr>
                                 <th>Budget</th>
-                                <th>User</th>
-                                <th>Balance</th>
-                                <th>Actions</th>
+                                <th class="text-end width--8">Balance</th>
                             </tr>
                         </thead>
                         <tbody>
                             {% for budget in budget_year.list %}
                             <tr>
-                                <td>{{ budget.month }}</td>
-                                <td>{{ budget.user }}</td>
-                                <td>{{ budget.balance }}</td>
-                                <td><a href="{% url 'view_budget' budget.id %}">View</a></td>
+                                <td><a href="{% url 'view_budget' budget.id %}" class="d-block">{{ budget.month|month_name  }}</a></td>
+                                {% if budget.balance >= 0 %}
+                                <td class="text-end">${{ budget.balance|intcomma }}</td>
+                                {% else %}
+                                <td class="text-end text-danger">-${{ budget.balance|abs|intcomma }}</td>
+                                {% endif %}
+                                     </td>
                             </tr>
                             {% endfor %}
                         </tbody>

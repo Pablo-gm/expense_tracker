@@ -1,46 +1,215 @@
 {% extends 'base.html' %}
 {% load static %}
+{% load app_extras %}
+{% load humanize %}
 
 {% block content %}
-    {% load app_extras %}
-    <h1>Budget</h1>
-    {{ budget.year }} - {{ budget.month }} ----> {{ budget.balance }}
+
+
+
+{{ budget.get_category_total|json_script:"chart-json" }}
+
+{{ budget.get_category_total }}
+{{ budget.get_income_total }}
+
+    <div class="row">
+        <div class="col-12">
+            <nav aria-label="breadcrumb" class="">
+                <ol class="breadcrumb">
+                    <li class="breadcrumb-item"><a href="{% url 'home' %}">Budgets</a></li>
+                    <li class="breadcrumb-item active" aria-current="page">{{ budget.month|month_name }} {{ budget.year }}</li>
+                </ol>
+            </nav>
+        </div>
+    </div>
 
     {% if expenses %}
-    <div class="row">
-        <div class="col">
-            <table class="table">
-                <thead>
-                    <tr>
-                        <th>Expense</th>
-                        <th>Type</th>
-                        <th>Amount</th>
-                        <th>Date</th>
-                        <th>User</th>
-                        <th>Edit</th>
-                    </tr>
-                </thead>
-                <tbody>
-                    {% for expense in expenses %}
-                    <tr>
-                        <td>{{ expense.description }}</td>
-                        <td class="category__wrapper">{{ expense.expense_type }} {% display_category expense.expense_type %}</td>
-                        <td>{{ expense.amount }}</td>
-                        <td>{{ expense.date_time }}</td>
-                        <td>{{ expense.user }}</td>
-                        <td><a href="{% url 'edit_expense' expense.id %}">Edit</a></td>
-                    </tr>
+    <div class="row justify-content-center">
+        <div class="col-lg-4">
+            <h3>Summary:</h3>
+            <div class="card mb-3 shadow--1">
+                <div class="card-body">
+                    <div  id="chart"></div>
+                </div>
+            </div>
+            <div class="card mb-3 shadow--1">
+                <div class="card-body pb-0">
+                    {% for cat, balance in budget.get_category_total.items %}
+                    <div class="mb-3 d-flex justify-content-between align-items-center">
+                        <div class="d-flex">
+                            {% display_category_icon cat %}
+                            <div class="d-flex flex-column">
+                                <h6 class="line-height--125 mb-0">Something</h6>
+                                <small class="text-muted line-height--125">{{ balance }}</small>
+                            </div>
+                        </div>
+                        <span>{{ balance }}</span>
+                    </div>
                     {% endfor %}
-                </tbody>
-            </table>
+                </div>
+
+            </div>
+            
+        </div>
+        <div class="col-lg-8">
+
+            <h1 class="h3">{{ budget.month|month_name }} {{ budget.year }}</h1>
+            {{ budget.balance }}
+
+            <div class="card mb-3 shadow--1">
+                <div class="table-responsive">
+                    <table class="table mb-0 text-nowrap">
+                        <thead>
+                            <tr>
+                                <th class="w-100">Expense</th>
+                                <th>Type</th>
+                                <th class="text-end">Amount</th>
+                                <th>Date</th>
+                                <th class="width--2"><span class="visually-hidden">Actions</span></th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {% for expense in expenses %}
+                            <tr>
+                                <td>{{ expense.description }}</td>
+                                <td><div class="category__wrapper">{% display_category_with_icon expense.expense_type %}</div></td>
+                                <td class="text-end {% if expense.expense_type == 'INC' %}text-success{% endif %}">${{ expense.amount|intcomma }}</td>
+                                <td>{{ expense.date_time|date:"d N Y, H:i" }}</td>
+                                <td class="py-0"><a href="{% url 'edit_expense' expense.id %}" class="table__icon-link"><i class="material-icons dropdown-icon">create</i><span class="visually-hidden">Edit</span></a></td>
+                            </tr>
+                            {% endfor %}
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+
+            <form  method="POST" action="{% url 'delete_budget' budget.id %}" class="my-3">
+                {% csrf_token %}
+                <button id="delete" type="submit" class="btn btn-danger">Delete budget</button>
+            </form>
+
         </div>
     </div>
     {% endif %}
 
-    <form  method="POST" action="{% url 'delete_budget' budget.id %}" class="my-3">
-        {% csrf_token %}
-        <button id="delete" type="submit" class="btn btn-danger">Delete budget</button>
-    </form>
+    <script src="https://cdn.jsdelivr.net/npm/apexcharts"></script>
+    <div  id="chart"></div>
+    https://apexcharts.com/docs/options/plotoptions/pie/
+    <script>
+
+        let category_display_names = {
+            'INC': 'Income',
+            'TRA': 'Transportation',
+            'HOU': 'Housing',
+            'FOO': 'Food & Groceries',
+            'UTL': 'Utilities',
+            'MED': 'Medical & Insurance',
+            'SAV': 'Savings',
+            'PER': 'Personal',
+            'ENT': 'Entertainment',
+            'EDU': 'Education',
+            'GIF': 'Gifts & Donations'
+        }
+
+        let category_colors = {
+            'INC': '#21cc76',
+            'TRA': '#ffcd43',
+            'HOU': '#09d7e6',
+            'FOO': '#5f5cff',
+            'UTL': '#2f3132',
+            'MED': '#e02d3f',
+            'SAV': '#fd7e14',
+            'PER': '#d92b71',
+            'ENT': '#0d69fd',
+            'EDU': '#2ce6af',
+            'GIF': '#d92b71'
+        }
+
+        let category_label_colors = {
+            'INC': '#000000',
+            'TRA': '#000000',
+            'HOU': '#000000',
+            'FOO': '#ffffff',
+            'UTL': '#ffffff',
+            'MED': '#ffffff',
+            'SAV': '#000000',
+            'PER': '#ffffff',
+            'ENT': '#ffffff',
+            'EDU': '#000000',
+            'GIF': '#ffffff'
+        }
+
+        var chart_info = JSON.parse(document.getElementById('chart-json').textContent);
+        let chart_labels = Object.keys(chart_info).map(str => category_display_names[str])
+        let chart_values = Object.values(chart_info).map(num => Number(num));
+        let chart_fill_colors = Object.keys(chart_info).map(str => category_colors[str])
+        let chart_labels_colors = Object.keys(chart_info).map(str => category_label_colors[str])
+
+        let budget_balance = {{ budget.balance }};
+
+        //let chart_values = Object.values(chart_info)
+        console.log(chart_info);
+        console.log(chart_labels);
+        console.log(chart_values);
+        var options = {
+                series: chart_values,
+                chart: {
+                    type: 'donut',
+                },
+                colors: chart_fill_colors,
+                responsive: [{
+                    breakpoint: 480,
+                    options: {
+                        chart: {
+                        width: 200
+                        },
+                        legend: {
+                        position: 'bottom'
+                        }
+                    }
+                }],
+                legend: {
+                    show: true,
+                    position: 'bottom'
+                },
+                labels: 
+                    chart_labels,
+                    dataLabels: {
+                        enabled: true,
+                        style: {
+                            fontSize: '12px',
+                            fontFamily: 'Inter, Helvetica, Arial, sans-serif',
+                            fontWeight: 'bold',
+                            colors: chart_labels_colors
+                        },
+                        dropShadow: {
+                            enabled: false,
+                            blur: 3,
+                            opacity: 0.8
+                        }
+                    },
+                    plotOptions: {
+                        pie: {
+                            donut: {
+                                labels: {
+                                    show: false,
+                                    total: {
+                                        show: true,
+                                        label: 'Balance:',
+                                        color: '#2f3132',
+                                        formatter: () => budget_balance
+                                    }
+                                }
+                            }
+                        }
+                    }
+        };
+        
+            var chart = new ApexCharts(document.querySelector("#chart"), options);
+            chart.render();
+    </script>
+
+
     <form method="post" action="{% url 'create_expense' budget.id %}">
         {% csrf_token %}
 

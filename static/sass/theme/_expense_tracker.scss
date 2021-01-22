@@ -13,7 +13,7 @@ $gray-800: #474a4b !default;
 $gray-900: #2f3132 !default;
 $black:    #000 !default;
 
-$blue:    #0d6efd !default;
+$blue:    #0d69fd !default;
 $indigo:  #6610f2 !default;
 $purple:  #5f5cff !default;
 $pink:    #d92b71 !default;
@@ -21,7 +21,7 @@ $red:     #e02d3f !default;
 $orange:  #fd7e14 !default;
 $yellow:  #ffcd43 !default;
 $green:   #21cc76 !default;
-$teal:    #20c997 !default;
+$teal:    #2ce6af !default;
 $cyan:    #09d7e6 !default;
 
 $primary:       $purple !default;
@@ -38,6 +38,8 @@ $font-family-sans-serif:      Inter,system-ui, -apple-system, "Segoe UI", Roboto
 $lead-font-size:              1.5rem;
 //$lead-font-weight:            500;
 
+// Links
+$link-decoration:                         none;
 
 // Headers
 $headings-font-weight:        600 !default;
@@ -113,6 +115,18 @@ $modal-sm:                          20rem;
 $modal-md:                          35rem;
 $modal-lg:                          50rem;
 $modal-xl:                          65rem;
+
+// Tables
+$table-cell-vertical-align:   middle;
+$table-cell-padding-y:        .75rem;
+$table-cell-padding-x:        1rem;
+
+$table-hover-bg-factor:       .04;
+$table-hover-bg:              rgba($primary, $table-hover-bg-factor);
+
+$table-border-color:          $gray-200;
+
+$table-group-separator-color: $gray-200;
 
 @import "../vendors/bootstrap/bootstrap.scss";
 

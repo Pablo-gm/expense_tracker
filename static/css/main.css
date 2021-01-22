@@ -6,7 +6,7 @@
  * Licensed under MIT (https://github.com/twbs/bootstrap/blob/main/LICENSE)
  */
 :root {
-  --bs-blue: #0d6efd;
+  --bs-blue: #0d69fd;
   --bs-indigo: #6610f2;
   --bs-purple: #5f5cff;
   --bs-pink: #d92b71;
@@ -14,7 +14,7 @@
   --bs-orange: #fd7e14;
   --bs-yellow: #ffcd43;
   --bs-green: #21cc76;
-  --bs-teal: #20c997;
+  --bs-teal: #2ce6af;
   --bs-cyan: #09d7e6;
   --bs-white: #fff;
   --bs-gray: #777b7d;
@@ -206,7 +206,7 @@ sup {
 
 a {
   color: #5f5cff;
-  text-decoration: underline;
+  text-decoration: none;
 }
 a:hover {
   color: #4c4acc;
@@ -277,8 +277,8 @@ table {
 }
 
 caption {
-  padding-top: 0.5rem;
-  padding-bottom: 0.5rem;
+  padding-top: 0.75rem;
+  padding-bottom: 0.75rem;
   color: #777b7d;
   text-align: left;
 }
@@ -1932,15 +1932,15 @@ progress {
   --bs-table-active-color: #2f3132;
   --bs-table-active-bg: rgba(0, 0, 0, 0.1);
   --bs-table-hover-color: #2f3132;
-  --bs-table-hover-bg: rgba(0, 0, 0, 0.075);
+  --bs-table-hover-bg: rgba(95, 92, 255, 0.04);
   width: 100%;
   margin-bottom: 1rem;
   color: #2f3132;
-  vertical-align: top;
-  border-color: #bec5c7;
+  vertical-align: middle;
+  border-color: #d5dde0;
 }
 .table > :not(caption) > * > * {
-  padding: 0.5rem 0.5rem;
+  padding: 0.75rem 1rem;
   background-color: var(--bs-table-bg);
   background-image: linear-gradient(var(--bs-table-accent-bg), var(--bs-table-accent-bg));
   border-bottom-width: 1px;
@@ -1952,7 +1952,7 @@ progress {
   vertical-align: bottom;
 }
 .table > :not(:last-child) > :last-child > * {
-  border-bottom-color: currentColor;
+  border-bottom-color: #d5dde0;
 }
 
 .caption-top {
@@ -1995,7 +1995,7 @@ progress {
   --bs-table-striped-color: #000;
   --bs-table-active-bg: #c9c8e6;
   --bs-table-active-color: #000;
-  --bs-table-hover-bg: #cecdec;
+  --bs-table-hover-bg: #d6d5f5;
   --bs-table-hover-color: #000;
   color: #000;
   border-color: #c9c8e6;
@@ -2007,7 +2007,7 @@ progress {
   --bs-table-striped-color: #000;
   --bs-table-active-bg: #dec0cc;
   --bs-table-active-color: #000;
-  --bs-table-hover-bg: #e4c5d2;
+  --bs-table-hover-bg: #edccda;
   --bs-table-hover-color: #000;
   color: #000;
   border-color: #dec0cc;
@@ -2019,7 +2019,7 @@ progress {
   --bs-table-striped-color: #000;
   --bs-table-active-bg: #beddcd;
   --bs-table-active-color: #000;
-  --bs-table-hover-bg: #c3e3d3;
+  --bs-table-hover-bg: #cbebdb;
   --bs-table-hover-color: #000;
   color: #000;
   border-color: #beddcd;
@@ -2031,7 +2031,7 @@ progress {
   --bs-table-striped-color: #000;
   --bs-table-active-bg: #b9dee1;
   --bs-table-active-color: #000;
-  --bs-table-hover-bg: #bfe4e7;
+  --bs-table-hover-bg: #c6edf0;
   --bs-table-hover-color: #000;
   color: #000;
   border-color: #b9dee1;
@@ -2043,7 +2043,7 @@ progress {
   --bs-table-striped-color: #000;
   --bs-table-active-bg: #e6ddc3;
   --bs-table-active-color: #000;
-  --bs-table-hover-bg: #ece3c9;
+  --bs-table-hover-bg: #f5ebd0;
   --bs-table-hover-color: #000;
   color: #000;
   border-color: #e6ddc3;
@@ -2055,7 +2055,7 @@ progress {
   --bs-table-striped-color: #000;
   --bs-table-active-bg: #e0c0c3;
   --bs-table-active-color: #000;
-  --bs-table-hover-bg: #e6c5c9;
+  --bs-table-hover-bg: #efccd0;
   --bs-table-hover-color: #000;
   color: #000;
   border-color: #e0c0c3;
@@ -2067,7 +2067,7 @@ progress {
   --bs-table-striped-color: #000;
   --bs-table-active-bg: #d5dde0;
   --bs-table-active-color: #000;
-  --bs-table-hover-bg: #dbe4e6;
+  --bs-table-hover-bg: #e4ecef;
   --bs-table-hover-color: #000;
   color: #000;
   border-color: #d5dde0;
@@ -2079,7 +2079,7 @@ progress {
   --bs-table-striped-color: #fff;
   --bs-table-active-bg: #444647;
   --bs-table-active-color: #fff;
-  --bs-table-hover-bg: #3f4041;
+  --bs-table-hover-bg: #37393a;
   --bs-table-hover-color: #fff;
   color: #fff;
   border-color: #444647;
@@ -2841,7 +2841,6 @@ textarea.form-control-lg {
   line-height: 1.5;
   color: #2f3132;
   text-align: center;
-  text-decoration: none;
   vertical-align: middle;
   cursor: pointer;
   user-select: none;
@@ -3312,7 +3311,7 @@ textarea.form-control-lg {
 .btn-link {
   font-weight: 400;
   color: #5f5cff;
-  text-decoration: underline;
+  text-decoration: none;
 }
 .btn-link:hover {
   color: #4c4acc;
@@ -3574,7 +3573,6 @@ textarea.form-control-lg {
   font-weight: 400;
   color: #2f3132;
   text-align: inherit;
-  text-decoration: none;
   white-space: nowrap;
   background-color: transparent;
   border: 0;
@@ -3758,7 +3756,6 @@ textarea.form-control-lg {
   display: block;
   padding: 0.5rem 1rem;
   font-weight: 500;
-  text-decoration: none;
   transition: color 0.15s ease-in-out, background-color 0.15s ease-in-out, border-color 0.15s ease-in-out;
 }
 @media (prefers-reduced-motion: reduce) {
@@ -3856,7 +3853,6 @@ textarea.form-control-lg {
   padding-bottom: 0.75rem;
   margin-right: 1rem;
   font-size: 1.25rem;
-  text-decoration: none;
   white-space: nowrap;
 }
 .navbar-nav {
@@ -4416,7 +4412,6 @@ textarea.form-control-lg {
   position: relative;
   display: block;
   color: #5f5cff;
-  text-decoration: none;
   background-color: #fff;
   border: 1px solid #bec5c7;
   transition: color 0.15s ease-in-out, background-color 0.15s ease-in-out, border-color 0.15s ease-in-out, box-shadow 0.15s ease-in-out;
@@ -4688,7 +4683,6 @@ textarea.form-control-lg {
   position: relative;
   display: block;
   padding: 0.5rem 1rem;
-  text-decoration: none;
   background-color: #fff;
   border: 1px solid rgba(0, 0, 0, 0.125);
 }
@@ -10641,7 +10635,7 @@ textarea.form-control-lg {
   }
 }
 :root {
-  --bs-blue-20: rgba(13, 110, 253, 0.2);
+  --bs-blue-20: rgba(13, 105, 253, 0.2);
   --bs-indigo-20: rgba(102, 16, 242, 0.2);
   --bs-purple-20: rgba(95, 92, 255, 0.2);
   --bs-pink-20: rgba(217, 43, 113, 0.2);
@@ -10649,17 +10643,45 @@ textarea.form-control-lg {
   --bs-orange-20: rgba(253, 126, 20, 0.2);
   --bs-yellow-20: rgba(255, 205, 67, 0.2);
   --bs-green-20: rgba(33, 204, 118, 0.2);
-  --bs-teal-20: rgba(32, 201, 151, 0.2);
+  --bs-teal-20: rgba(44, 230, 175, 0.2);
   --bs-cyan-20: rgba(9, 215, 230, 0.2);
   --bs-white-20: rgba(255, 255, 255, 0.2);
   --bs-gray-20: rgba(119, 123, 125, 0.2);
   --bs-gray-dark-20: rgba(71, 74, 75, 0.2);
 }
 
+.width--2 {
+  width: 2rem;
+}
+.width--8 {
+  width: 8rem;
+}
+
+.line-height--125 {
+  line-height: 1.25rem;
+}
+
 .dropdown .dropdown-icon {
   font-size: 1.25rem;
   vertical-align: text-bottom;
   margin-right: 0.25rem;
+}
+
+.table > :not(:last-child) > :last-child > * {
+  border-bottom-color: #d5dde0;
+}
+.table__icon-link {
+  height: 2.5rem;
+  width: 2.5rem;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 50%;
+  color: rgba(47, 49, 50, 0.6);
+}
+.table__icon-link:hover {
+  color: #2f3132;
+  background-color: rgba(47, 49, 50, 0.08);
 }
 
 .nav-link-icon {
@@ -10705,7 +10727,7 @@ textarea.form-control-lg {
 .nav-link-icon__icon svg {
   width: 1.5rem;
   height: 1.5rem;
-  fill: rgba(47, 49, 50, 0.8);
+  fill: rgba(47, 49, 50, 0.6);
 }
 
 .category__wrapper {
@@ -10720,12 +10742,46 @@ textarea.form-control-lg {
   height: 2.5rem;
   margin-right: 0.5rem;
   border-radius: 50%;
-  background-position: center;
-  background-repeat: no-repeat;
+}
+.category__icon--FOO {
+  color: var(--bs-purple);
+  background-color: var(--bs-purple-20);
+}
+.category__icon--ENT {
+  color: var(--bs-blue);
+  background-color: var(--bs-blue-20);
+}
+.category__icon--INC {
+  color: var(--bs-green);
+  background-color: var(--bs-green-20);
 }
 .category__icon--EDU {
-  fill: var(--bs-purple);
-  background-color: var(--bs-purple-20);
+  color: var(--bs-teal);
+  background-color: var(--bs-teal-20);
+}
+.category__icon--HOU {
+  color: var(--bs-cyan);
+  background-color: var(--bs-cyan-20);
+}
+.category__icon--TRA {
+  color: var(--bs-yellow);
+  background-color: var(--bs-yellow-20);
+}
+.category__icon--UTL {
+  color: var(--bs-dark);
+  background-color: var(--bs-dark-20);
+}
+.category__icon--MED {
+  color: var(--bs-red);
+  background-color: var(--bs-red-20);
+}
+.category__icon--SAV {
+  color: var(--bs-orange);
+  background-color: var(--bs-orange-20);
+}
+.category__icon--PER, .category__icon--GIF {
+  color: var(--bs-pink);
+  background-color: var(--bs-pink-20);
 }
 
 .login__form {

@@ -1,20 +1,37 @@
 from django import template
 from django.utils.safestring import mark_safe
+import calendar
 
 register = template.Library()
+
+import calendar
+
+@register.filter
+def month_name(month_number):
+    return calendar.month_name[month_number]
+
+@register.filter(name='abs')
+def abs_filter(value):
+    return abs(value)
 
 @register.simple_tag()
 def debug_object_dump(var):
     return vars(var)
 
-category_full = {'EDU': 'Education'}
-base_icon = '<svg xmlns="http://www.w3.org/2000/svg" height="24" viewBox="0 0 24 24" width="24"><path d="M0 0h24v24H0z" fill="none"/><path d="M18.06 22.99h1.66c.84 0 1.53-.64 1.63-1.46L23 5.05h-5V1h-1.97v4.05h-4.97l.3 2.34c1.71.47 3.31 1.32 4.27 2.26 1.44 1.42 2.43 2.89 2.43 5.29v8.05zM1 21.99V21h15.03v.99c0 .55-.45 1-1.01 1H2.01c-.56 0-1.01-.45-1.01-1zm15.03-7c0-8-15.03-8-15.03 0h15.03zM1.02 17h15v2h-15z"/></svg>'
-
+category_full = {'FOO': 'Food & Groceries', 'INC': 'Income', 'HOU': 'Housing', 'TRA': 'Transportation', 'UTL': 'Utilities', 'MED': 'Medical & Insurance', 'SAV': 'Savings', 'PER': 'Personal', 'ENT': 'Entertainment', 'EDU': 'Education', 'GIF': 'Gifts & Donations'}
+category_icon = {'FOO': 'fastfood', 'INC': 'attach_money', 'HOU': 'home', 'TRA': 'directions_car', 'MED': 'health_adn_safety', 'SAV': 'savings', 'PER': 'self_improvement', 'ENT': 'tv', 'EDU': 'school', 'GIF': 'card_giftcard'}
+@register.simple_tag()
+def display_category_with_icon(arg):
+    try:
+        answer = '<span class="category__icon category__icon--' + arg + '"><span class="material-icons">' + category_icon[arg] + '</span></span>' + category_full[arg]
+        return mark_safe(answer)
+    except KeyError:
+        return ''
 
 @register.simple_tag()
-def display_category(arg):
+def display_category_icon(arg):
     try:
-        answer = '<span class="category__icon category__icon--EDU">' + base_icon + '</span>' + category_full[arg]
+        answer = '<span class="category__icon category__icon--' + arg + '"><span class="material-icons">' + category_icon[arg] + '</span></span>'
         return mark_safe(answer)
     except KeyError:
         return ''

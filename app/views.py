@@ -10,6 +10,7 @@ from app.forms import RegistrationForm, AccountAuthenticationForm, AccountUpdate
 from django.contrib import messages
 
 from .models import Budget, Expense
+from django.db.models import Sum
 
 import datetime
 

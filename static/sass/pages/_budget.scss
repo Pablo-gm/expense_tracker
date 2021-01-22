@@ -12,12 +12,57 @@
         height: 2.5rem;
         margin-right: .5rem;
         border-radius: 50%;
-        background-position: center;
-        background-repeat: no-repeat;
 
-        &--EDU{
-            fill: var(--bs-purple);
+        &--FOO{
+            color: var(--bs-purple);
             background-color: var(--bs-purple-20);
         }
+
+        &--ENT{
+            color: var(--bs-blue);
+            background-color: var(--bs-blue-20);
+        }
+
+        &--INC{
+            color: var(--bs-green);
+            background-color: var(--bs-green-20);
+        }
+
+        &--EDU{
+            color: var(--bs-teal);
+            background-color: var(--bs-teal-20);
+        }
+
+        &--HOU{
+            color: var(--bs-cyan);
+            background-color: var(--bs-cyan-20);
+        }
+
+        &--TRA{
+            color: var(--bs-yellow);
+            background-color: var(--bs-yellow-20);
+        }
+
+        &--UTL{
+            color: var(--bs-dark);
+            background-color: var(--bs-dark-20);
+        }
+
+        &--MED{
+            color: var(--bs-red);
+            background-color: var(--bs-red-20);
+        }
+
+        &--SAV{
+            color: var(--bs-orange);
+            background-color: var(--bs-orange-20);
+        }
+
+        &--PER, &--GIF{
+            color: var(--bs-pink);
+            background-color: var(--bs-pink-20);
+        }
+
     }
 }
+
