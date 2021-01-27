@@ -1,7 +1,9 @@
 import datetime
+from decimal import Decimal
 from django.conf import settings
 from django.db import models
 from django.contrib.auth.models import BaseUserManager, AbstractBaseUser
+from django.core.validators import MinValueValidator
 
 # based on mitchtabian
 class MyAccountManager(BaseUserManager):
@@ -88,7 +90,7 @@ class Budget(models.Model):
     user = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.CASCADE)
     year = models.IntegerField(choices=YEAR_CHOICES, default=datetime.datetime.now().year)
     month = models.IntegerField(choices=Months.choices, default=Months.choices[datetime.datetime.now().month - 1])
-    balance = models.DecimalField(max_digits=10, decimal_places=2, default=0.00)
+    balance = models.DecimalField(max_digits=10, decimal_places=2, default=0.00,  validators=[MinValueValidator(Decimal('0.00'))])
 
     @property
     def get_income_total(self):
@@ -96,19 +98,30 @@ class Budget(models.Model):
         total = sum([expense.amount for expense in expenses if expense.expense_type == 'INC'])
         return total 
 
+    def get_expense_total(self):
+        expenses = self.expense_set.all()
+        total = sum([expense.amount for expense in expenses if expense.expense_type != 'INC'])
+        return total 
+
     def get_category_total(self):
         expenses = self.expense_set.all()
         totals = {}
         for expense in expenses:
-            if expense.expense_type == 'INC' or expense.amount <= 0:
+            if expense.expense_type == 'INC' or expense.amount < 0:
                 continue
             if expense.expense_type not in totals:
                 totals[expense.expense_type] = expense.amount
             else:
                 totals[expense.expense_type] += expense.amount
 
-        return totals
+        return {k: v for k, v in sorted(totals.items(), key=lambda item: item[1], reverse=True)}
 
+    def get_minimum_datetime(self):
+        return datetime.datetime(self.year, self.month, 1)
+
+    # @register.filter
+    # def get_expense_category(self, category):
+    #     return self.items.filter(expense_type__exact=category)
 
     class Meta:
         constraints = [

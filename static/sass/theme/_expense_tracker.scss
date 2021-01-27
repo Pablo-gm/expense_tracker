@@ -27,7 +27,7 @@ $cyan:    #09d7e6 !default;
 $primary:       $purple !default;
 $secondary:     $pink !default;
 $success:       $green !default;
-$info:          $cyan !default;
+$info:          $blue !default;
 $warning:       $yellow !default;
 $danger:        $red !default;
 $light:         $gray-100 !default;
@@ -37,6 +37,8 @@ $dark:          $gray-900 !default;
 $font-family-sans-serif:      Inter,system-ui, -apple-system, "Segoe UI", Roboto, "Helvetica Neue", Arial, "Noto Sans", "Liberation Sans", sans-serif, "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol", "Noto Color Emoji" !default;
 $lead-font-size:              1.5rem;
 //$lead-font-weight:            500;
+
+$text-muted:                  $gray-700;
 
 // Links
 $link-decoration:                         none;
@@ -73,6 +75,10 @@ $navbar-light-active-color:         $primary;
 $navbar-brand-height:               1.5rem;
 $navbar-brand-padding-y:            .75rem;
 
+$nav-tabs-border-width:             0;
+$nav-tabs-link-active-color:        $primary;
+$nav-tabs-link-active-bg:           $white;
+
 // Cards
 $card-border-width:                 0;
 
@@ -81,12 +87,19 @@ $alert-padding-y:                   .75rem;
 //$alert-padding-x:                   $spacer !default;
 $alert-margin-bottom:               1rem !default;
 $alert-border-width:                0;
-
-$alert-bg-scale:                    -88% !default;
-$alert-border-scale:                -70% !default;
-$alert-color-scale:                 40% !default;
-
+// $alert-bg-scale:                    -88% !default;
+// $alert-border-scale:                -70% !default;
+// $alert-color-scale:                 40% !default;
+$alert-bg-scale:                    0;
+$alert-color-scale:                 0;
 //$alert-dismissible-padding-r:       $alert-padding-x * 3 !default; // 3x covers width of x plus default padding on either side
+
+// Toasts
+
+$toast-max-width:                   20rem;
+$toast-font-size:                   1rem;
+$toast-border-width:                0;
+$toast-box-shadow:                  0px 4px 12px rgba($dark , 0.35);
 
 // Dropdown
 $dropdown-padding-y:                0;
@@ -112,9 +125,9 @@ $dropdown-item-padding-y:           .5rem;
 $modal-content-border-width:        0;
 
 $modal-sm:                          20rem;
-$modal-md:                          35rem;
-$modal-lg:                          50rem;
-$modal-xl:                          65rem;
+$modal-md:                          28rem;
+$modal-lg:                          36rem;
+$modal-xl:                          44rem;
 
 // Tables
 $table-cell-vertical-align:   middle;
@@ -128,6 +141,9 @@ $table-border-color:          $gray-200;
 
 $table-group-separator-color: $gray-200;
 
+// Progress bar
+$progress-border-radius:           0;
+
 @import "../vendors/bootstrap/bootstrap.scss";
 
 :root {
@@ -137,4 +153,3 @@ $table-group-separator-color: $gray-200;
     }
 }
 
-// sass static/sass/main.scss static/css/main.css

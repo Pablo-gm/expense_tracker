@@ -4,7 +4,7 @@
 {% load humanize %}
 
 {% block content %}
-<div class="row">
+<div class="row mb-5">
     <div class="col-12">
         <nav aria-label="breadcrumb" class="">
             <ol class="breadcrumb">
@@ -32,35 +32,25 @@
     </div>
 </div>
 
-
 <div class="row justify-content-center">
     <div class="col-lg-6" id="budgets_by_year" aria-live="polite">
         {% for budget_year in budgets_list %}
             <div class="budgets-js" data-year="{{ budget_year.grouper }}">
                 <h5>{{ budget_year.grouper }}</h5>
-                <div class="card mb-3 shadow--1">
-                    <table class="table mb-0">
-                        <thead>
-                            <tr>
-                                <th>Budget</th>
-                                <th class="text-end width--8">Balance</th>
-                            </tr>
-                        </thead>
-                        <tbody>
-                            {% for budget in budget_year.list %}
-                            <tr>
-                                <td><a href="{% url 'view_budget' budget.id %}" class="d-block">{{ budget.month|month_name  }}</a></td>
-                                {% if budget.balance >= 0 %}
-                                <td class="text-end">${{ budget.balance|intcomma }}</td>
-                                {% else %}
-                                <td class="text-end text-danger">-${{ budget.balance|abs|intcomma }}</td>
-                                {% endif %}
-                                     </td>
-                            </tr>
-                            {% endfor %}
-                        </tbody>
-                    </table>
+                {% for budget in budget_year.list %}
+                <div class="mb-2 shadow--1 card bg-white">
+                    <a href="{% url 'view_budget' budget.id %}" class="d-flex justify-content-between align-items-center flex-row p-3 link-list">
+                        <div class="line-height--125 fw--500">{{ budget.month|month_name  }}</div>
+                        {% if budget.balance > 0 %}
+                        <span class="text-info fw--500">+${{ budget.balance|intcomma }}</span>
+                        {% elif budget.balance == 0 %}
+                        <span class="text-dark fw--500">${{ budget.balance|intcomma }}</span>
+                        {% else %}
+                        <span class="text-danger fw--500">-${{ budget.balance|abs|intcomma }}</span>
+                        {% endif %}
+                    </a>
                 </div>
+                {% endfor %}
             </div>
         {% empty %}
             <div class="text-center my-5">
@@ -81,7 +71,7 @@
             <div class="modal-content">
                 <div class="modal-header">
                     <h5 class="modal-title">Create budget</h5>
-                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"><span class="material-icons">close</span></button>
                 </div>
                 <div class="modal-body">
                     {% csrf_token %}

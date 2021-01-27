@@ -150,7 +150,8 @@ def view_budget(request, budget_id):
         raise Http404("Budget not found...")
 
     context['budget'] = budget
-    context['expenses'] = Expense.objects.filter(budget=budget)
+    budget_expenses = Expense.objects.filter(budget=budget)
+    context['expenses_history'] = budget_expenses.order_by('-date_time')
     context['expense_form'] = ExpenseForm()
     
     return render(request, 'app/view_budget.html', context)
@@ -239,7 +240,13 @@ def create_expense(request, budget_id):
             messages.error(request, 'Invalid data.')
 
     if budget:
-        return redirect('view_budget', budget_id=budget.id)
+        context['budget'] = budget
+        budget_expenses = Expense.objects.filter(budget=budget)
+        context['expenses_history'] = budget_expenses.order_by('-date_time')
+        context['expense_form'] = form
+        
+        return render(request, 'app/view_budget.html', context)
+        #return redirect('view_budget', budget_id=budget.id)
         
     return redirect("budgets")
 

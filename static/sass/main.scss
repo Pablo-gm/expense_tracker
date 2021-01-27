@@ -1,9 +1,16 @@
 @import 'theme/expense_tracker';
 @import 'base/utilities';
+@import 'base/typography';
+@import 'components/alert';
+@import 'components/button';
+@import 'components/card';
 @import 'components/dropdown';
+@import 'components/input';
 @import 'components/table';
+@import 'components/link';
 @import 'layout/navigation';
 @import 'pages/budget';
 @import 'pages/login';
 
 //@import 'vendors/bootstrap';
+// sass static/sass/main.scss static/css/main.css

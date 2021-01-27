@@ -4,6 +4,7 @@ from django.contrib.auth import authenticate
 
 from app.models import Account, Budget, Expense
 
+from django.core.validators import MaxValueValidator, MinValueValidator
 
 class RegistrationForm(UserCreationForm):
     email = forms.EmailField(max_length=60, help_text='Required. Add a valid email address.')
@@ -61,6 +62,7 @@ class BudgetForm(forms.ModelForm):
 
 class ExpenseForm(forms.ModelForm):
     date_time = forms.DateTimeField(input_formats=["%Y-%m-%d %H:%M"])
+    amount =  forms.DecimalField(validators=[MinValueValidator(0.0)])
 
     class Meta:
         model = Expense

@@ -16,6 +16,18 @@
             <ul class="navbar-nav ms-auto">
                 {% if request.user.is_authenticated %}
                     {% with request.resolver_match.url_name as url_name %}
+                    {% if url_name == 'view_budget' or url_name == 'create_expense' %}
+                    <li class="nav-item">
+                        <span class="visually-hidden">Delete budget</span>
+                        <a class="nav-link nav-link-icon" href="#" id="deleteBudgetBtn"  data-bs-toggle="modal" data-bs-target="#deleteBudget">
+                            <div class="nav-link-icon__wrapper">
+                                <span class="nav-link-icon__icon">
+                                    <svg xmlns="http://www.w3.org/2000/svg" height="24" viewBox="0 0 24 24" width="24"><path d="M0 0h24v24H0V0z" fill="none"/><path d="M16 9v10H8V9h8m-1.5-6h-5l-1 1H5v2h14V4h-3.5l-1-1zM18 7H6v12c0 1.1.9 2 2 2h8c1.1 0 2-.9 2-2V7z"/></svg>
+                                </span>
+                            </div>
+                        </a>
+                    </li>
+                    {% endif %}
                     <li class="nav-item">
                         <span class="visually-hidden">Budgets</span>
                         <a class="nav-link nav-link-icon {% if url_name == 'budgets' %}active{% endif %}" href="{% url 'home' %}">

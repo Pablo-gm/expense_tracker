@@ -13,6 +13,13 @@
         margin-right: .5rem;
         border-radius: 50%;
 
+        &--DATE{
+            flex-direction: column;
+            color: $dark;
+            background-color: rgba($dark, 0.08);
+            border-radius: .25rem;
+        }
+
         &--FOO{
             color: var(--bs-purple);
             background-color: var(--bs-purple-20);
@@ -63,6 +70,18 @@
             background-color: var(--bs-pink-20);
         }
 
+    }
+
+    &__header{
+        font-weight: 500;
+        font-size: 1rem;
+        line-height: 1.25rem;
+    }
+    &__text{
+        font-weight: 500;
+        font-size: .75rem;
+        line-height: 1rem;
+        text-transform: uppercase;
     }
 }
 

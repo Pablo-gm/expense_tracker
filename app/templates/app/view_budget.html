@@ -4,15 +4,9 @@
 {% load humanize %}
 
 {% block content %}
-
-
-
 {{ budget.get_category_total|json_script:"chart-json" }}
 
-{{ budget.get_category_total }}
-{{ budget.get_income_total }}
-
-    <div class="row">
+    <div class="row mb-5">
         <div class="col-12">
             <nav aria-label="breadcrumb" class="">
                 <ol class="breadcrumb">
@@ -23,79 +17,263 @@
         </div>
     </div>
 
-    {% if expenses %}
+    {% if expenses_history %}
     <div class="row justify-content-center">
-        <div class="col-lg-4">
-            <h3>Summary:</h3>
-            <div class="card mb-3 shadow--1">
-                <div class="card-body">
-                    <div  id="chart"></div>
-                </div>
-            </div>
-            <div class="card mb-3 shadow--1">
-                <div class="card-body pb-0">
-                    {% for cat, balance in budget.get_category_total.items %}
-                    <div class="mb-3 d-flex justify-content-between align-items-center">
-                        <div class="d-flex">
-                            {% display_category_icon cat %}
-                            <div class="d-flex flex-column">
-                                <h6 class="line-height--125 mb-0">Something</h6>
-                                <small class="text-muted line-height--125">{{ balance }}</small>
-                            </div>
-                        </div>
-                        <span>{{ balance }}</span>
-                    </div>
-                    {% endfor %}
-                </div>
-
-            </div>
-            
+        <div class="col-lg-12 text-center">
+            <h1 class="h3 mb-4">{{ budget.month|month_name }} {{ budget.year }}</h1>
         </div>
-        <div class="col-lg-8">
-
-            <h1 class="h3">{{ budget.month|month_name }} {{ budget.year }}</h1>
-            {{ budget.balance }}
-
-            <div class="card mb-3 shadow--1">
-                <div class="table-responsive">
-                    <table class="table mb-0 text-nowrap">
-                        <thead>
-                            <tr>
-                                <th class="w-100">Expense</th>
-                                <th>Type</th>
-                                <th class="text-end">Amount</th>
-                                <th>Date</th>
-                                <th class="width--2"><span class="visually-hidden">Actions</span></th>
-                            </tr>
-                        </thead>
-                        <tbody>
-                            {% for expense in expenses %}
-                            <tr>
-                                <td>{{ expense.description }}</td>
-                                <td><div class="category__wrapper">{% display_category_with_icon expense.expense_type %}</div></td>
-                                <td class="text-end {% if expense.expense_type == 'INC' %}text-success{% endif %}">${{ expense.amount|intcomma }}</td>
-                                <td>{{ expense.date_time|date:"d N Y, H:i" }}</td>
-                                <td class="py-0"><a href="{% url 'edit_expense' expense.id %}" class="table__icon-link"><i class="material-icons dropdown-icon">create</i><span class="visually-hidden">Edit</span></a></td>
-                            </tr>
-                            {% endfor %}
-                        </tbody>
-                    </table>
+        <div class="col-lg-4">
+            <h6 class="text-title d-none">Summary</h6>
+            <div class="card shadow--1 mb-4 text-center fw--500">
+                <div class="card-body">
+                    <h5 class="text-muted mb-0">Balance</h5>
+                    <h4>{% if budget.balance >= 0 %}<span class="text-info">+${{ budget.balance|intcomma }}</span>{% else %}<span class="text-danger">-${{ budget.balance|abs|intcomma }}</span>{% endif %}</h2>
+                    <div class="progress mb-3">
+                        <div class="progress-bar bg-info" role="progressbar" style="width: {% widthratio budget.get_income_total budget.balance 100 %}%" aria-valuenow="30" aria-valuemin="0" aria-valuemax="100"></div>
+                        <div class="progress-bar bg-danger" role="progressbar" style="width: {% widthratio budget.get_expense_total budget.balance 100 %}%" aria-valuenow="20" aria-valuemin="0" aria-valuemax="100"></div>
+                    </div>
+                    <div class="row">
+                        <div class="col border-end">
+                            <div class="text-muted">Income</div>
+                            <div class="text-info">${{ budget.get_income_total|intcomma}}</div>
+                        </div>
+                        <div class="col">
+                            <div class="text-muted">Expenses</div>
+                            <div class="text-danger">${{ budget.get_expense_total|intcomma}}</div>
+                        </div>
+                    </div>
                 </div>
             </div>
 
-            <form  method="POST" action="{% url 'delete_budget' budget.id %}" class="my-3">
-                {% csrf_token %}
-                <button id="delete" type="submit" class="btn btn-danger">Delete budget</button>
-            </form>
+            <h6 class="text-title">Insights</h6>
+            <div class="card mb-3 shadow--1">
+                <nav class="nav nav-tabs nav-fill" role="tablist">
+                    <a class="nav-link active" id="chart0-tab" data-bs-toggle="tab" href="#chart0" role="tab" aria-controls="chart0" aria-selected="true">Graph 1</a>
+                    <a class="nav-link" id="chart1-tab" data-bs-toggle="tab" href="#chart1" role="tab" aria-controls="chart1" aria-selected="false">Graph 2</a>  
+                </nav>                      </nav>
+                <div class="card-body tab-content">
+                    <div  id="chart0" class="tab-pane fade show active"  role="tabpanel" aria-labelledby="chart0-tab"></div>
+                    <div id="chart1" class="tab-pane fade" role="tabpanel" aria-labelledby="chart1-tab"></div>
+                </div>
+            </div>
+        </div>
+        <div class="col-lg-4">
+            <nav class="nav nav-fill nav-pills mb-3" role="tablist">
+                <a class="nav-link active" id="expenses_category-tab" data-bs-toggle="tab" href="#expenses_category" role="tab" aria-controls="expenses_category" aria-selected="true">Expenses</a>
+                <a class="nav-link" id="expenses_history-tab" data-bs-toggle="tab" href="#expenses_history" role="tab" aria-controls="expenses_history" aria-selected="false">History</a>
+            </nav>
+            <div class="tab-content mb-5">
+                <div class="tab-pane fade show active"  role="tabpanel" aria-labelledby="expenses_category-tab" id="expenses_category">
+                    <h6 class="text-title">By category</h6>
+                    <div class="">
+                        <div class="pb-0 accordion" id="category-accordion">
+                            {% with total_expenses=budget.get_expense_total %}  
+                            {% for cat, balance in budget.get_category_total.items %}
+                            <div class="accordion-item expense-card shadow--1 mb-3 bg-white py-2">
+                                <button id="category-{{ forloop.counter0 }}" data-bs-toggle="collapse" data-bs-target="#category_content-{{ forloop.counter0 }}" aria-expanded="true" aria-controls="category_content-{{ forloop.counter0 }}" class="d-flex justify-content-between align-items-center expense-card__body py-2 link--accordion collapsed">
+                                    <div class="d-flex text-start">
+                                        {% display_category_icon cat %}
+                                        <div class="d-flex flex-column">
+                                            <div class="line-height--125 fw--500">{% display_category_name cat %}</div>
+                                            <small class="text-muted line-height--125">${{ balance|intcomma }}</small>
+                                        </div>
+                                    </div>
+                                    <div class="d-flex">
+                                        <strong>{% display_percentage balance total_expenses  %}%</strong>
+                                        <span class="material-icons text-muted ms-2 link__accordion-icon">expand_less</span>
+                                    </div>
+                                    
+                                </button>
+                                <div id="category_content-{{ forloop.counter0 }}" class="collapse" aria-labelledby="category-{{ forloop.counter0 }}" data-bs-parent="#category-accordion">
+                                    {% for expense in expenses_history|get_expense_category:cat %}
+                                    <a href="{% url 'edit_expense' expense.id %}" class="d-flex justify-content-between align-items-center flex-row px-3 py-2 link-list link-list--flat">
+                                        <div class="d-flex">
+                                            {% display_category_date_icon expense.date_time %}
+                                            <div class="d-flex flex-column">
+                                                <div class="line-height--125 fw--500">{{ expense.description|truncatechars:30 }}</div>
+                                                <small class="text-muted line-height--125">
+                                                    <span class="text-dark">${{ expense.amount|intcomma }}</span>
+                                                </small>
+                                            </div>
+                                        </div>
+                                    </a>
+                                    {% endfor %}
+                                </div>
+                            </div>
+                            {% endfor %}
+                            {% endwith %}
+                        </div>
+                    </div>
+                </div>
+                <div class="tab-pane fade"  role="tabpanel" aria-labelledby="expenses_history-tab" id="expenses_history">
+                    <h6 class="text-title">Transactions</h6>
+                    <div class="">
+                        {% for expense in expenses_history %}
+                        <div class="mb-3 shadow--1 card bg-white">
+                            <a href="{% url 'edit_expense' expense.id %}" class=" d-flex justify-content-between align-items-center flex-row p-3 link-list">
+                                <div class="d-flex">
+                                    {% display_category_icon expense.expense_type %}
+                                    <div class="d-flex flex-column">
+                                        <div class="line-height--125 fw--500">{{ expense.description|truncatechars:25 }}</div>
+                                        <small class="text-muted line-height--125">{{ expense.date_time|date:"d M Y - f a" }}</small>
+                                    </div>
+                                </div>
+                                {% if expense.amount > 0 %}
+                                    {% if expense.expense_type == 'INC' %}
+                                    <span class="text-info fw--500">+${{ expense.amount|intcomma }}</span>
+                                    {% else %}
+                                    <span class="text-danger fw--500">-${{ expense.amount|intcomma }}</span>
+                                    {% endif %}
+                                {% else %}
+                                <span class="fw--500 text-dark">${{ expense.amount|intcomma }}</span>
+                                {% endif %}
+                            </a>
+                        </div>
+                        {% endfor %}
+                    </div>
+                </div>
+            </div>
 
+
+        </div>
+
+    </div>
+
+    <button class="btn btn-primary btn--float" id="newExpenseBtn"  data-bs-toggle="modal" data-bs-target="#newExpense">Add Expense</button>
+
+
+    <!-- Delete budget modal -->
+    <div class="modal fade" id="deleteBudget" tabindex="-1" aria-labelledby="deleteBudget" aria-hidden="true">
+        <div class="modal-dialog modal-sm modal-dialog-centered">
+            <form method="post" action="{% url 'delete_budget' budget.id %}" class="w-100">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h5 class="modal-title">Delete budget</h5>
+                        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"><span class="material-icons">close</span></button>
+                    </div>
+                    <div class="modal-body">
+                        {% csrf_token %}
+                        Are you sure you want to delete budget <strong>{{ budget.month|month_name }} {{ budget.year }}</strong> ? 
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-outline-dark" data-bs-dismiss="modal">Close</button>
+                        <button class="btn btn-danger"  type="submit" id="submitButton" >Delete</button>
+                    </div>
+                </div>
+            </form>
         </div>
     </div>
+
+
+    <!-- Add expense modal -->
+    <div class="modal fade" id="newExpense" tabindex="-1" aria-labelledby="newExpense" aria-hidden="true">
+        <div class="modal-dialog modal-md modal-dialog-centered">
+            <form method="post" action="{% url 'create_expense' budget.id %}" class="w-100" onsubmit="return checkForm()">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h5 class="modal-title">Add expense</h5>
+                        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"><span class="material-icons">close</span></button>
+                    </div>
+                    <div class="modal-body">
+                        {% csrf_token %}
+                        <div class="mb-3">
+                            <label for="expense_type" class="form-label">Category</label>
+                            <select id="expense_type" name="expense_type" class="form-select {% if expense_form.expense_type.errors %}is-invalid{% endif %}">
+                                {% for val, display in expense_form.fields.expense_type.choices %}
+                                    <option value="{{ val }}" {% if val == expense_form.fields.expense_type.initial %} selected {% endif %}>{{display}}</option>
+                                {% endfor %}
+                            </select>
+                            <div id="expense_typeHelp" class="invalid-feedback">{{ expense_form.expense_type.errors|escape }}</div>
+                        </div>
+                
+                        <div class="mb-3">
+                            <label for="description" class="form-label">Description</label>
+                            <input type="text" name="description" class="form-control {% if expense_form.description.errors %}is-invalid{% endif %}" maxlength="120" required="" id="description">
+                            <div id="descriptionHelp" class="invalid-feedback">{{ expense_form.description.errors|escape }}</div>
+                        </div>
+                
+                        <div class="mb-3">
+                            <label for="amount" class="form-label">Amount</label>
+                            <input type="number" name="amount" class="form-control {% if expense_form.amount.errors %}is-invalid{% endif %}" value="0.0" step="1.00" min="0.0" required="" id="amount">
+                            <div id="amountHelp" class="invalid-feedback">{{ expense_form.amount.errors|escape }}</div>
+                        </div>
+                        
+                        <div class="row mb-3">
+                            <div class="col-6">
+                                <label for="date" class="form-label">Date</label>
+                                <input type="date" name="date" {% get_date_attributes budget.year budget.month %} class="form-control {% if expense_form.date_time.errors %}is-invalid{% endif %}"  id="date">
+                                <div id="dateHelp" class="invalid-feedback">{{ expense_form.date_time.errors|escape }}</div>
+                            </div>
+                            <div class="col-6">
+                                <label for="time" class="form-label">Time</label>
+                                <input type="time" name="time" class="form-control {% if expense_form.date_time.errors %}is-invalid{% endif %}"  id="time">
+                                <div id="timeHelp" class="invalid-feedback">{{ expense_form.date_time.errors|escape }}</div>
+                            </div>
+                        </div>
+                        <input id="date_time" name="date_time" type="hidden" value="{{ budget.get_minimum_datetime|date:'Y-m-d H:i' }}">
+                
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-outline-dark" data-bs-dismiss="modal">Close</button>
+                        <button class="btn btn-primary"  type="submit" id="submitExpenseButton" disabled>Add</button>
+                    </div>
+                </div>
+            </form>
+        </div>
+    </div>
+
     {% endif %}
 
     <script src="https://cdn.jsdelivr.net/npm/apexcharts"></script>
-    <div  id="chart"></div>
-    https://apexcharts.com/docs/options/plotoptions/pie/
+
+
     <script>
+
+        let add_expense = document.getElementById('newExpenseBtn');
+        let description = document.getElementById('description');
+        let amount = document.getElementById('amount');
+        let time = document.getElementById('time');
+        let date = document.getElementById('date');
+        let date_time = document.getElementById('date_time');
+        let submit_expense = document.getElementById('submitExpenseButton');
+
+        add_expense.addEventListener('click', fillTime);
+
+        description.addEventListener('input', checkValues);
+        amount.addEventListener('input', checkValues);
+        
+        function checkValues(){
+            if( description.value && amount.value ){
+                submit_expense.disabled = false;
+            }else{
+                submit_expense.disabled = true;
+            }
+        }
+
+        function fillTime(){
+            var date = new Date();
+            time.value =date.getHours() + ':' + date.getMinutes();
+        }
+
+        function checkForm() {
+            date_time.value = date.value + ' ' + time.value;
+            return true;
+        }
+
+        submit_expense.addEventListener('click', function(){
+            
+            console.log(date_time.value);
+        });
+
+        // Create our number formatter.
+        var currencyFormat = new Intl.NumberFormat('en-US', {
+        style: 'currency',
+        currency: 'USD',
+
+        // These options are needed to round to whole numbers if that's what you want.
+        //minimumFractionDigits: 0, // (this suffices for whole numbers, but will print 2500.10 as $2,500.1)
+        //maximumFractionDigits: 0, // (causes 2500.99 to be printed as $2,501)
+        });
 
         let category_display_names = {
             'INC': 'Income',
@@ -140,17 +318,14 @@
         }
 
         var chart_info = JSON.parse(document.getElementById('chart-json').textContent);
+        //const chart_info = Object.entries(chart_info2).sort(([,a],[,b]) => b-a).reduce((r, [k, v]) => ({ ...r, [k]: v }), {});
         let chart_labels = Object.keys(chart_info).map(str => category_display_names[str])
         let chart_values = Object.values(chart_info).map(num => Number(num));
         let chart_fill_colors = Object.keys(chart_info).map(str => category_colors[str])
         let chart_labels_colors = Object.keys(chart_info).map(str => category_label_colors[str])
 
-        let budget_balance = {{ budget.balance }};
+        let budget_balance = {{ budget.get_expense_total }};
 
-        //let chart_values = Object.values(chart_info)
-        console.log(chart_info);
-        console.log(chart_labels);
-        console.log(chart_values);
         var options = {
                 series: chart_values,
                 chart: {
@@ -191,59 +366,122 @@
                     plotOptions: {
                         pie: {
                             donut: {
+                                size: '66%',
                                 labels: {
-                                    show: false,
+                                    show: true,
+                                    showAlways: true,
+                                    value:{
+                                        fontWeight: 600,
+                                        color: '#2f3132',
+                                        fontFamily: 'Inter, Helvetica, Arial, sans-serif',
+                                        formatter: (v) => currencyFormat.format(v)
+                                    },
                                     total: {
                                         show: true,
-                                        label: 'Balance:',
-                                        color: '#2f3132',
-                                        formatter: () => budget_balance
+                                        label: 'TOTAL:',
+                                        color: '#777b7d',
+                                        fontSize: '18px',
+                                        fontFamily: 'Inter, Helvetica, Arial, sans-serif',
+                                        fontWeight: 500,
+                                        formatter: () => currencyFormat.format(budget_balance) 
                                     }
                                 }
                             }
                         }
+                    },
+                    tooltip: {
+                        y: {
+                            formatter: (v) => currencyFormat.format(v)
+                        },
                     }
         };
         
-            var chart = new ApexCharts(document.querySelector("#chart"), options);
+            var chart = new ApexCharts(document.querySelector("#chart0"), options);
             chart.render();
+
+            var bar_values = [];
+            for(let i = 0; i < chart_values.length; i++){
+                bar_values.push({name: chart_labels[i], data:chart_values[i]})
+            }
+
+
+
+        var options2 = {
+            series: [{
+                name: 'Total expenses',
+                data: chart_values
+            }],
+            colors:  chart_fill_colors,
+            chart: {
+                type: 'bar',
+                toolbar: { show: false},
+                height: chart_values.length * 40 + 40
+            },
+            plotOptions: {
+                bar: {
+                    horizontal: true,
+                    distributed: true,
+                    barHeight: '100%',
+                    dataLabels: {
+                        position: 'bottom'
+                    }
+                }
+            },
+            legend: {
+                    show: false,
+                    position: 'bottom'
+                },
+                
+            dataLabels: {
+                enabled: false
+            },
+            xaxis: {
+                categories: chart_labels,
+                //max: chart_values[chart_values.length - 1],
+                tickAmount: 5,
+                axisBorder: {
+                    color: '#d5dde0'
+                },
+                axisTick: {
+                    color: '#d5dde0'
+                }
+            },
+            yaxis: {
+                categories: Object.keys(chart_info),
+                labels: {
+                    show: true,
+                    color: '#2f3132'
+                }
+            },
+            tooltip: {
+                fillSeriesColor: false,
+                style: {
+                    fontSize: '12px',
+                    fontFamily: 'Inter, Helvetica, Arial, sans-serif'
+                },
+                y: {
+                    formatter: (v) => currencyFormat.format(v)
+                },
+            }
+        };
+
+        var chart2 = new ApexCharts(document.querySelector("#chart1"), options2);
+        chart2.render();
+
+        let graph_buttons = document.querySelectorAll('.graph-js');
+        let current_graph = 0;
+        for (let i = 0; i < graph_buttons.length; i++) {
+            graph_buttons[i].addEventListener('click', changeGraph, false);
+        }
+        function changeGraph(){
+            if(current_graph != this.dataset.graph){
+                graph_buttons[current_graph].classList.replace('btn-primary','btn-outline-primary');
+                graph_buttons[this.dataset.graph].classList.replace('btn-outline-primary','btn-primary');
+                current_graph = this.dataset.graph;
+            }
+        }
+
+
     </script>
-
-
-    <form method="post" action="{% url 'create_expense' budget.id %}">
-        {% csrf_token %}
-
-        <div class="mb-3">
-            <label for="expense_type" class="form-label">Category</label>
-            <select id="expense_type" name="expense_type" class="form-select {% if expense_form.expense_type.errors %}is-invalid{% endif %}">
-                {% for val, display in expense_form.fields.expense_type.choices %}
-                    <option value="{{ val }}" {% if val == expense_form.fields.expense_type.initial %} selected {% endif %}>{{display}}</option>
-                {% endfor %}
-            </select>
-            <div id="expense_typeHelp" class="invalid-feedback">{{ expense_form.expense_type.errors }}</div>
-        </div>
-
-        <div class="mb-3">
-            <label for="description" class="form-label">Description</label>
-            <input type="text" name="description" class="form-control {% if expense_form.description.errors %}is-invalid{% endif %}" maxlength="120" required="" id="description">
-            <div id="descriptionHelp" class="invalid-feedback">{{ expense_form.description.errors }}</div>
-        </div>
-
-        <div class="mb-3">
-            <label for="amount" class="form-label">Amount</label>
-            <input type="number" name="amount" class="form-control {% if expense_form.amount.errors %}is-invalid{% endif %}" value="0.0" step="0.01" required="" id="amount">
-            <div id="amountHelp" class="invalid-feedback">{{ expense_form.amount.errors }}</div>
-        </div>
-
-        <div class="mb-3">
-            <label for="date_time" class="form-label">Date</label>
-            <input type="text" name="date_time" class="form-control {% if expense_form.date_time.errors %}is-invalid{% endif %}"  required="" id="date_time">
-            <div id="date_timeHelp" class="invalid-feedback">{{ expense_form.date_time.errors }}</div>
-        </div>
-
-
-        <button class="btn btn-lg btn-primary btn-block" type="submit" id="submitButton" >Create</button>
-    </form>
-
 
 {% endblock content %}

@@ -1,7 +1,19 @@
 {% if messages %}
-    {% for message in messages %}
-    <div class="alert {% if message.tags %} alert-{{ message.tags }}{% endif %}" role="alert">
-        {{ message }}
+    <div class="notification-float__wrapper">
+        {% for message in messages %}
+        <div class="alert alert-dismissible {% if message.tags %} alert-{{ message.tags }}{% endif %}" role="alert">
+            {{ message }}
+            <button type="button" class="btn-close btn-close--material" data-bs-dismiss="alert" aria-label="Close"><span class="material-icons">close</span></button>
+        </div>
+        {% endfor %}
     </div>
-    {% endfor %}
 {% endif %}
+
+<div class="notification-float__wrapper">
+    <div class="toast d-flex align-items-center text-white bg-primary border-0 show" role="alert" aria-live="assertive" aria-atomic="true">
+        <div class="toast-body">
+          Hello, world! This is a toast message.
+        </div>
+        <button type="button" class="btn-close btn-close-white ms-auto me-2" data-bs-dismiss="toast" aria-label="Close"><span class="material-icons">close</span></button>
+      </div>
+</div>

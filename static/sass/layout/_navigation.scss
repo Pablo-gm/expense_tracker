@@ -1,40 +1,56 @@
 .nav-link-icon{
+    $self: &;
     padding: 0;
+    outline: 0;
+    border-radius: 50%;
+
+    &__wrapper{
+        display: flex;
+        align-items: center;
+    }
+
+    &__icon{
+        border-radius: 50%;
+        width: 2.5rem;
+        height: 2.5rem;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+
+        &--avatar{
+            background-color: rgba(47, 49, 50, .08);
+        }
+
+        svg{
+            width: 1.5rem;
+            height: 1.5rem;
+            fill: rgba(47, 49, 50, .6);
+        }
+
+    }
+
+    &:focus{
+        background-color: var(--bs-purple-20);
+    }
+
+    &::after{
+        display: none;
+    }
+
+    &:hover{
+        #{ $self }__icon--avatar{
+            background-color: var(--bs-purple-20);
+        }
+
+        & svg, #{ $self }.active svg{
+            fill: var(--bs-primary);
+        }
+
+    } 
 }
 
 .navbar-expand .navbar-nav .nav-link-icon{
     padding-right: 0;
     padding-left: 0;
     margin-left: .5rem;
-}
-
-.nav-link-icon::after{
-    display: none;
-}
-.nav-link-icon:hover .nav-link-icon__icon--avatar{
-    background-color: var(--bs-purple-20);
-}
-
-.nav-link-icon:hover svg, .nav-link-icon.active svg{
-    fill: var(--bs-primary);
-}
-.nav-link-icon__wrapper{
-    display: flex;
-    align-items: center;
-}
-.nav-link-icon__icon{
-    border-radius: 50%;
-    width: 2.5rem;
-    height: 2.5rem;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-}
-.nav-link-icon__icon--avatar{
-    background-color: rgba(47, 49, 50, .08);
-}
-.nav-link-icon__icon svg{
-    width: 1.5rem;
-    height: 1.5rem;
-    fill: rgba(47, 49, 50, .6);
 }
