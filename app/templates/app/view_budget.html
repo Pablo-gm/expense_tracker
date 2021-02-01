@@ -18,7 +18,7 @@
     </div>
 
     {% if expenses_history %}
-    <div class="row justify-content-center">
+    <div class="row justify-content-center mb-3">
         <div class="col-lg-12 text-center">
             <h1 class="h3 mb-4">{{ budget.month|month_name }} {{ budget.year }}</h1>
         </div>
@@ -29,8 +29,8 @@
                     <h5 class="text-muted mb-0">Balance</h5>
                     <h4>{% if budget.balance >= 0 %}<span class="text-info">+${{ budget.balance|intcomma }}</span>{% else %}<span class="text-danger">-${{ budget.balance|abs|intcomma }}</span>{% endif %}</h2>
                     <div class="progress mb-3">
-                        <div class="progress-bar bg-info" role="progressbar" style="width: {% widthratio budget.get_income_total budget.balance 100 %}%" aria-valuenow="30" aria-valuemin="0" aria-valuemax="100"></div>
-                        <div class="progress-bar bg-danger" role="progressbar" style="width: {% widthratio budget.get_expense_total budget.balance 100 %}%" aria-valuenow="20" aria-valuemin="0" aria-valuemax="100"></div>
+                        <div class="progress-bar bg-info" role="progressbar" style="width: {% widthratio budget.get_income_total budget.balance|abs 100 %}%" aria-valuenow="30" aria-valuemin="0" aria-valuemax="100"></div>
+                        <div class="progress-bar bg-danger" role="progressbar" style="width: {% widthratio budget.get_expense_total budget.balance|abs 100 %}%" aria-valuenow="20" aria-valuemin="0" aria-valuemax="100"></div>
                     </div>
                     <div class="row">
                         <div class="col border-end">
@@ -44,18 +44,19 @@
                     </div>
                 </div>
             </div>
-
+            {% if budget.get_category_total|length > 0 %}
             <h6 class="text-title">Insights</h6>
             <div class="card mb-3 shadow--1">
                 <nav class="nav nav-tabs nav-fill" role="tablist">
                     <a class="nav-link active" id="chart0-tab" data-bs-toggle="tab" href="#chart0" role="tab" aria-controls="chart0" aria-selected="true">Graph 1</a>
                     <a class="nav-link" id="chart1-tab" data-bs-toggle="tab" href="#chart1" role="tab" aria-controls="chart1" aria-selected="false">Graph 2</a>  
                 </nav>                      </nav>
-                <div class="card-body tab-content">
+                <div class="py-3 tab-content">
                     <div  id="chart0" class="tab-pane fade show active"  role="tabpanel" aria-labelledby="chart0-tab"></div>
                     <div id="chart1" class="tab-pane fade" role="tabpanel" aria-labelledby="chart1-tab"></div>
                 </div>
             </div>
+            {% endif %}
         </div>
         <div class="col-lg-4">
             <nav class="nav nav-fill nav-pills mb-3" role="tablist">
@@ -139,140 +140,13 @@
 
     </div>
 
-    <button class="btn btn-primary btn--float" id="newExpenseBtn"  data-bs-toggle="modal" data-bs-target="#newExpense">Add Expense</button>
-
-
-    <!-- Delete budget modal -->
-    <div class="modal fade" id="deleteBudget" tabindex="-1" aria-labelledby="deleteBudget" aria-hidden="true">
-        <div class="modal-dialog modal-sm modal-dialog-centered">
-            <form method="post" action="{% url 'delete_budget' budget.id %}" class="w-100">
-                <div class="modal-content">
-                    <div class="modal-header">
-                        <h5 class="modal-title">Delete budget</h5>
-                        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"><span class="material-icons">close</span></button>
-                    </div>
-                    <div class="modal-body">
-                        {% csrf_token %}
-                        Are you sure you want to delete budget <strong>{{ budget.month|month_name }} {{ budget.year }}</strong> ? 
-                    </div>
-                    <div class="modal-footer">
-                        <button type="button" class="btn btn-outline-dark" data-bs-dismiss="modal">Close</button>
-                        <button class="btn btn-danger"  type="submit" id="submitButton" >Delete</button>
-                    </div>
-                </div>
-            </form>
-        </div>
-    </div>
-
-
-    <!-- Add expense modal -->
-    <div class="modal fade" id="newExpense" tabindex="-1" aria-labelledby="newExpense" aria-hidden="true">
-        <div class="modal-dialog modal-md modal-dialog-centered">
-            <form method="post" action="{% url 'create_expense' budget.id %}" class="w-100" onsubmit="return checkForm()">
-                <div class="modal-content">
-                    <div class="modal-header">
-                        <h5 class="modal-title">Add expense</h5>
-                        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"><span class="material-icons">close</span></button>
-                    </div>
-                    <div class="modal-body">
-                        {% csrf_token %}
-                        <div class="mb-3">
-                            <label for="expense_type" class="form-label">Category</label>
-                            <select id="expense_type" name="expense_type" class="form-select {% if expense_form.expense_type.errors %}is-invalid{% endif %}">
-                                {% for val, display in expense_form.fields.expense_type.choices %}
-                                    <option value="{{ val }}" {% if val == expense_form.fields.expense_type.initial %} selected {% endif %}>{{display}}</option>
-                                {% endfor %}
-                            </select>
-                            <div id="expense_typeHelp" class="invalid-feedback">{{ expense_form.expense_type.errors|escape }}</div>
-                        </div>
-                
-                        <div class="mb-3">
-                            <label for="description" class="form-label">Description</label>
-                            <input type="text" name="description" class="form-control {% if expense_form.description.errors %}is-invalid{% endif %}" maxlength="120" required="" id="description">
-                            <div id="descriptionHelp" class="invalid-feedback">{{ expense_form.description.errors|escape }}</div>
-                        </div>
-                
-                        <div class="mb-3">
-                            <label for="amount" class="form-label">Amount</label>
-                            <input type="number" name="amount" class="form-control {% if expense_form.amount.errors %}is-invalid{% endif %}" value="0.0" step="1.00" min="0.0" required="" id="amount">
-                            <div id="amountHelp" class="invalid-feedback">{{ expense_form.amount.errors|escape }}</div>
-                        </div>
-                        
-                        <div class="row mb-3">
-                            <div class="col-6">
-                                <label for="date" class="form-label">Date</label>
-                                <input type="date" name="date" {% get_date_attributes budget.year budget.month %} class="form-control {% if expense_form.date_time.errors %}is-invalid{% endif %}"  id="date">
-                                <div id="dateHelp" class="invalid-feedback">{{ expense_form.date_time.errors|escape }}</div>
-                            </div>
-                            <div class="col-6">
-                                <label for="time" class="form-label">Time</label>
-                                <input type="time" name="time" class="form-control {% if expense_form.date_time.errors %}is-invalid{% endif %}"  id="time">
-                                <div id="timeHelp" class="invalid-feedback">{{ expense_form.date_time.errors|escape }}</div>
-                            </div>
-                        </div>
-                        <input id="date_time" name="date_time" type="hidden" value="{{ budget.get_minimum_datetime|date:'Y-m-d H:i' }}">
-                
-                    </div>
-                    <div class="modal-footer">
-                        <button type="button" class="btn btn-outline-dark" data-bs-dismiss="modal">Close</button>
-                        <button class="btn btn-primary"  type="submit" id="submitExpenseButton" disabled>Add</button>
-                    </div>
-                </div>
-            </form>
-        </div>
-    </div>
-
-    {% endif %}
-
     <script src="https://cdn.jsdelivr.net/npm/apexcharts"></script>
-
 
     <script>
 
-        let add_expense = document.getElementById('newExpenseBtn');
-        let description = document.getElementById('description');
-        let amount = document.getElementById('amount');
-        let time = document.getElementById('time');
-        let date = document.getElementById('date');
-        let date_time = document.getElementById('date_time');
-        let submit_expense = document.getElementById('submitExpenseButton');
-
-        add_expense.addEventListener('click', fillTime);
-
-        description.addEventListener('input', checkValues);
-        amount.addEventListener('input', checkValues);
-        
-        function checkValues(){
-            if( description.value && amount.value ){
-                submit_expense.disabled = false;
-            }else{
-                submit_expense.disabled = true;
-            }
-        }
-
-        function fillTime(){
-            var date = new Date();
-            time.value =date.getHours() + ':' + date.getMinutes();
-        }
-
-        function checkForm() {
-            date_time.value = date.value + ' ' + time.value;
-            return true;
-        }
-
-        submit_expense.addEventListener('click', function(){
-            
-            console.log(date_time.value);
-        });
-
-        // Create our number formatter.
         var currencyFormat = new Intl.NumberFormat('en-US', {
-        style: 'currency',
-        currency: 'USD',
-
-        // These options are needed to round to whole numbers if that's what you want.
-        //minimumFractionDigits: 0, // (this suffices for whole numbers, but will print 2500.10 as $2,500.1)
-        //maximumFractionDigits: 0, // (causes 2500.99 to be printed as $2,501)
+            style: 'currency',
+            currency: 'USD',
         });
 
         let category_display_names = {
@@ -318,84 +192,85 @@
         }
 
         var chart_info = JSON.parse(document.getElementById('chart-json').textContent);
-        //const chart_info = Object.entries(chart_info2).sort(([,a],[,b]) => b-a).reduce((r, [k, v]) => ({ ...r, [k]: v }), {});
-        let chart_labels = Object.keys(chart_info).map(str => category_display_names[str])
-        let chart_values = Object.values(chart_info).map(num => Number(num));
-        let chart_fill_colors = Object.keys(chart_info).map(str => category_colors[str])
-        let chart_labels_colors = Object.keys(chart_info).map(str => category_label_colors[str])
+        if( chart_info ){
+            //const chart_info = Object.entries(chart_info2).sort(([,a],[,b]) => b-a).reduce((r, [k, v]) => ({ ...r, [k]: v }), {});
+            let chart_labels = Object.keys(chart_info).map(str => category_display_names[str])
+            let chart_values = Object.values(chart_info).map(num => Number(num));
+            let chart_fill_colors = Object.keys(chart_info).map(str => category_colors[str])
+            let chart_labels_colors = Object.keys(chart_info).map(str => category_label_colors[str])
 
-        let budget_balance = {{ budget.get_expense_total }};
+            let budget_balance = {{ budget.get_expense_total }};
 
-        var options = {
-                series: chart_values,
-                chart: {
-                    type: 'donut',
-                },
-                colors: chart_fill_colors,
-                responsive: [{
-                    breakpoint: 480,
-                    options: {
-                        chart: {
-                        width: 200
-                        },
-                        legend: {
-                        position: 'bottom'
-                        }
-                    }
-                }],
-                legend: {
-                    show: true,
-                    position: 'bottom'
-                },
-                labels: 
-                    chart_labels,
-                    dataLabels: {
-                        enabled: true,
-                        style: {
-                            fontSize: '12px',
-                            fontFamily: 'Inter, Helvetica, Arial, sans-serif',
-                            fontWeight: 'bold',
-                            colors: chart_labels_colors
-                        },
-                        dropShadow: {
-                            enabled: false,
-                            blur: 3,
-                            opacity: 0.8
-                        }
+            var options = {
+                    series: chart_values,
+                    chart: {
+                        type: 'donut',
                     },
-                    plotOptions: {
-                        pie: {
-                            donut: {
-                                size: '66%',
-                                labels: {
-                                    show: true,
-                                    showAlways: true,
-                                    value:{
-                                        fontWeight: 600,
-                                        color: '#2f3132',
-                                        fontFamily: 'Inter, Helvetica, Arial, sans-serif',
-                                        formatter: (v) => currencyFormat.format(v)
-                                    },
-                                    total: {
+                    colors: chart_fill_colors,
+                    responsive: [{
+                        breakpoint: 480,
+                        options: {
+                            chart: {
+                                height: 400
+                            },
+                            legend: {
+                                position: 'bottom'
+                            }
+                        }
+                    }],
+                    legend: {
+                        show: true,
+                        position: 'bottom'
+                    },
+                    labels: 
+                        chart_labels,
+                        dataLabels: {
+                            enabled: true,
+                            style: {
+                                fontSize: '12px',
+                                fontFamily: 'Inter, Helvetica, Arial, sans-serif',
+                                fontWeight: 'bold',
+                                colors: chart_labels_colors
+                            },
+                            dropShadow: {
+                                enabled: false,
+                                blur: 3,
+                                opacity: 0.8
+                            }
+                        },
+                        plotOptions: {
+                            pie: {
+                                donut: {
+                                    size: '66%',
+                                    labels: {
                                         show: true,
-                                        label: 'TOTAL:',
-                                        color: '#777b7d',
-                                        fontSize: '18px',
-                                        fontFamily: 'Inter, Helvetica, Arial, sans-serif',
-                                        fontWeight: 500,
-                                        formatter: () => currencyFormat.format(budget_balance) 
+                                        showAlways: true,
+                                        value:{
+                                            fontWeight: 600,
+                                            color: '#2f3132',
+                                            fontFamily: 'Inter, Helvetica, Arial, sans-serif',
+                                            formatter: (v) => currencyFormat.format(v)
+                                        },
+                                        total: {
+                                            show: true,
+                                            label: 'TOTAL:',
+                                            color: '#777b7d',
+                                            fontSize: '18px',
+                                            fontFamily: 'Inter, Helvetica, Arial, sans-serif',
+                                            fontWeight: 500,
+                                            formatter: () => currencyFormat.format(budget_balance) 
+                                        }
                                     }
                                 }
                             }
-                        }
-                    },
-                    tooltip: {
-                        y: {
-                            formatter: (v) => currencyFormat.format(v)
                         },
-                    }
-        };
-        
+                        tooltip: {
+                            y: {
+                                formatter: (v) => currencyFormat.format(v)
+                            },
+                        }
+            };
+            
             var chart = new ApexCharts(document.querySelector("#chart0"), options);
             chart.render();
 
@@ -405,82 +280,193 @@
             }
 
 
-
-        var options2 = {
-            series: [{
-                name: 'Total expenses',
-                data: chart_values
-            }],
-            colors:  chart_fill_colors,
-            chart: {
-                type: 'bar',
-                toolbar: { show: false},
-                height: chart_values.length * 40 + 40
-            },
-            plotOptions: {
-                bar: {
-                    horizontal: true,
-                    distributed: true,
-                    barHeight: '100%',
-                    dataLabels: {
-                        position: 'bottom'
+            var options2 = {
+                series: [{
+                    name: 'Total expenses',
+                    data: chart_values
+                }],
+                colors:  chart_fill_colors,
+                chart: {
+                    type: 'bar',
+                    toolbar: { show: false},
+                    height: chart_values.length * 40 + 48
+                },
+                plotOptions: {
+                    bar: {
+                        horizontal: true,
+                        distributed: true,
+                        barHeight: '100%',
+                        dataLabels: {
+                            position: 'bottom'
+                        }
                     }
-                }
-            },
-            legend: {
-                    show: false,
-                    position: 'bottom'
                 },
+                legend: {
+                        show: false,
+                        position: 'bottom'
+                    },
+                    
+                dataLabels: {
+                    enabled: false
+                },
+                xaxis: {
+                    categories: chart_labels,
+                    //max: chart_values[chart_values.length - 1],
+                    tickAmount: 5,
+                    axisBorder: {
+                        color: '#d5dde0'
+                    },
+                    axisTick: {
+                        color: '#d5dde0'
+                    }
+                },
+                yaxis: {
+                    categories: Object.keys(chart_info),
+                    labels: {
+                        show: true,
+                        color: '#2f3132',
+                        fontSize: '14px'
+                    }
+                },
+                tooltip: {
+                    fillSeriesColor: false,
+                    style: {
+                        fontSize: '12px',
+                        fontFamily: 'Inter, Helvetica, Arial, sans-serif'
+                    },
+                    y: {
+                        formatter: (v) => currencyFormat.format(v)
+                    },
+                }
+            };
+
+
+            var chart2 = new ApexCharts(document.querySelector("#chart1"), options2);
+            chart2.render();
+
+        }
+
+    </script>
+    {% else %}
+    <div class="text-center my-5">
+        <h4 class="mb-0">No expenses yet</h4>
+    </div>
+    {% endif %}
+
+    <button class="btn btn-primary btn--float" id="newExpenseBtn"  data-bs-toggle="modal" data-bs-target="#newExpense">Add transaction</button>
+
+
+    <!-- Delete budget modal -->
+    <div class="modal fade" id="deleteBudget" tabindex="-1" aria-labelledby="deleteBudget" aria-hidden="true">
+        <div class="modal-dialog modal-sm modal-dialog-centered">
+            <form method="post" action="{% url 'delete_budget' budget.id %}" class="w-100">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h5 class="modal-title">Delete budget</h5>
+                        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"><span class="material-icons">close</span></button>
+                    </div>
+                    <div class="modal-body">
+                        {% csrf_token %}
+                        Are you sure you want to delete budget <strong>{{ budget.month|month_name }} {{ budget.year }}</strong> ? 
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-outline-dark" data-bs-dismiss="modal">Close</button>
+                        <button class="btn btn-danger"  type="submit" id="submitButton" >Delete</button>
+                    </div>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <!-- Add expense modal -->
+    <div class="modal fade" id="newExpense" tabindex="-1" aria-labelledby="newExpense" aria-hidden="true">
+        <div class="modal-dialog modal-md modal-dialog-centered">
+            <form method="post" action="{% url 'create_expense' budget.id %}" class="w-100" onsubmit="return readyForm()">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h5 class="modal-title">Add expense</h5>
+                        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"><span class="material-icons">close</span></button>
+                    </div>
+                    <div class="modal-body">
+                        {% csrf_token %}
+                        <div class="mb-3">
+                            <label for="expense_type" class="form-label">Category</label>
+                            <select id="expense_type" name="expense_type" class="form-select {% if expense_form.expense_type.errors %}is-invalid{% endif %}">
+                                {% for val, display in expense_form.fields.expense_type.choices %}
+                                    <option value="{{ val }}" {% if val == expense_form.fields.expense_type.initial %} selected {% endif %}>{{display}}</option>
+                                {% endfor %}
+                            </select>
+                            <div id="expense_typeHelp" class="invalid-feedback">{{ expense_form.expense_type.errors|escape }}</div>
+                        </div>
                 
-            dataLabels: {
-                enabled: false
-            },
-            xaxis: {
-                categories: chart_labels,
-                //max: chart_values[chart_values.length - 1],
-                tickAmount: 5,
-                axisBorder: {
-                    color: '#d5dde0'
-                },
-                axisTick: {
-                    color: '#d5dde0'
-                }
-            },
-            yaxis: {
-                categories: Object.keys(chart_info),
-                labels: {
-                    show: true,
-                    color: '#2f3132'
-                }
-            },
-            tooltip: {
-                fillSeriesColor: false,
-                style: {
-                    fontSize: '12px',
-                    fontFamily: 'Inter, Helvetica, Arial, sans-serif'
-                },
-                y: {
-                    formatter: (v) => currencyFormat.format(v)
-                },
+                        <div class="mb-3">
+                            <label for="description" class="form-label">Description</label>
+                            <input type="text" name="description" class="form-control {% if expense_form.description.errors %}is-invalid{% endif %}" maxlength="120" required="" id="description">
+                            <div id="descriptionHelp" class="invalid-feedback">{{ expense_form.description.errors|escape }}</div>
+                        </div>
+                
+                        <div class="mb-3">
+                            <label for="amount" class="form-label">Amount</label>
+                            <input type="number" name="amount" class="form-control {% if expense_form.amount.errors %}is-invalid{% endif %}" value="0.0" step="0.01" min="0.0" required="" id="amount">
+                            <div id="amountHelp" class="invalid-feedback">{{ expense_form.amount.errors|escape }}</div>
+                        </div>
+                        
+                        <div class="row">
+                            <div class="col-6">
+                                <label for="date" class="form-label">Date</label>
+                                <input type="date" name="date" {% get_date_attributes budget.year budget.month %} class="form-control {% if expense_form.date_time.errors %}is-invalid{% endif %}"  id="date">
+                                <div id="dateHelp" class="invalid-feedback">{{ expense_form.date_time.errors|escape }}</div>
+                            </div>
+                            <div class="col-6">
+                                <label for="time" class="form-label">Time</label>
+                                <input type="time" name="time" class="form-control {% if expense_form.date_time.errors %}is-invalid{% endif %}"  id="time">
+                                <div id="timeHelp" class="invalid-feedback">{{ expense_form.date_time.errors|escape }}</div>
+                            </div>
+                        </div>
+                        <input id="date_time" name="date_time" type="hidden" value="{{ budget.get_minimum_datetime|date:'Y-m-d H:i' }}">
+                
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-outline-dark" data-bs-dismiss="modal">Close</button>
+                        <button class="btn btn-primary"  type="submit" id="submitExpenseButton" disabled>Add</button>
+                    </div>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <script>
+
+        let add_expense = document.getElementById('newExpenseBtn');
+        let description = document.getElementById('description');
+        let amount = document.getElementById('amount');
+        let time = document.getElementById('time');
+        let date = document.getElementById('date');
+        let date_time = document.getElementById('date_time');
+        let submit_expense = document.getElementById('submitExpenseButton');
+
+        add_expense.addEventListener('click', fillTime);
+
+        description.addEventListener('input', checkValues);
+        amount.addEventListener('input', checkValues);
+        
+        function checkValues(){
+            if( description.value && amount.value ){
+                submit_expense.disabled = false;
+            }else{
+                submit_expense.disabled = true;
             }
-        };
-
-        var chart2 = new ApexCharts(document.querySelector("#chart1"), options2);
-        chart2.render();
-
-        let graph_buttons = document.querySelectorAll('.graph-js');
-        let current_graph = 0;
-        for (let i = 0; i < graph_buttons.length; i++) {
-            graph_buttons[i].addEventListener('click', changeGraph, false);
-        }
-        function changeGraph(){
-            if(current_graph != this.dataset.graph){
-                graph_buttons[current_graph].classList.replace('btn-primary','btn-outline-primary');
-                graph_buttons[this.dataset.graph].classList.replace('btn-outline-primary','btn-primary');
-                current_graph = this.dataset.graph;
-            }
         }
 
+        function fillTime(){
+            var date = new Date();
+            time.value =date.getHours() + ':' + ("0" + date.getMinutes()).slice(-2) ;
+        }
+
+        function readyForm() {
+            date_time.value = date.value + ' ' + time.value;
+            return true;
+        }
 
     </script>
 

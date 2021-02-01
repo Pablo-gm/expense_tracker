@@ -1,36 +1,124 @@
 {% extends 'base.html' %}
 {% load static %}
+{% load app_extras %}
+{% load humanize %}
 
 {% block content %}
-    <p>Ok</p>
-    {{ expense.description }}
-    <td><a href="{% url 'view_budget' expense.budget.id %}">View budget</a></td>
 
-    <form  method="post" action="{% url 'edit_expense' expense.id %}">
-        {% csrf_token %}
-        {{ expense_form }}
-        <button class="btn btn-lg btn-primary btn-block" type="submit" id="submitButton" >edit</button>
-    </form>
-    
-    {% for field in expense_form %}
-    <p>
-        {% for error in field.errors %}
-    <p style="color: red">{{ error }}</p>
-    {% endfor %}
-    </p>
-    {% endfor %}
-    {% if expense_form.non_field_errors %}
-    <div style="color: red">
-        <p>{{expense_form.non_field_errors}}</p>
+    <div class="row mb-5">
+        <div class="col-12">
+            <nav aria-label="breadcrumb" class="">
+                <ol class="breadcrumb">
+                    <li class="breadcrumb-item"><a href="{% url 'home' %}">Budgets</a></li>
+                    <li class="breadcrumb-item"><a href="{% url 'view_budget' expense.budget.id %}">{{ budget.month|month_name }} {{ budget.year }}</a></li>
+                    <li class="breadcrumb-item active" aria-current="page">Expense</li>
+                </ol>
+            </nav>
+        </div>
     </div>
 
-    {% endif %}
+    <form  method="post" action="{% url 'edit_expense' expense.id %}" onsubmit="return readyForm()">
 
+        <div class="card shadow--1 p-3 login__form mx-auto">
+            <h1 class="h3 mb-0">Edit</h1>
+            {% csrf_token %}
+            <div class="mb-3">
+                <label for="expense_type" class="form-label">Category</label>
+                <select id="expense_type" name="expense_type" class="form-select {% if expense_form.expense_type.errors %}is-invalid{% endif %}">
+                    {% for val, display in expense_form.fields.expense_type.choices %}
+                        <option value="{{ val }}" {% if val == expense_form.expense_type.value %} selected {% endif %}>{{display}}</option>
+                    {% endfor %}
+                </select>
+                <div id="expense_typeHelp" class="invalid-feedback">{{ expense_form.expense_type.errors|escape }}</div>
+            </div>
+    
+            <div class="mb-3">
+                <label for="description" class="form-label">Description</label>
+                <input type="text" name="description" class="form-control {% if expense_form.description.errors %}is-invalid{% endif %}" maxlength="120" required="" id="description" value="{{ expense_form.description.value|escape }}">
+                <div id="descriptionHelp" class="invalid-feedback">{{ expense_form.description.errors|escape }}</div>
+            </div>
+    
+            <div class="mb-3">
+                <label for="amount" class="form-label">Amount</label>
+                <input type="number" name="amount" class="form-control {% if expense_form.amount.errors %}is-invalid{% endif %}" step="0.01" min="0.0" required="" id="amount" value="{{ expense_form.amount.value }}">
+                <div id="amountHelp" class="invalid-feedback">{{ expense_form.amount.errors|escape }}</div>
+            </div>
 
-    <form  method="POST" action="{% url 'delete_expense' expense.id %}">
-        {% csrf_token %}
-        <button id="delete" type="submit" class="btn btn-danger">Delete Expense</button>
+            <div class="row mb-3">
+                <div class="col-6">
+                    <label for="date" class="form-label">Date</label>
+                    <input type="date" name="date" {% get_date_attributes budget.year budget.month expense_form.date_time.value|date:'j' %} class="form-control {% if expense_form.date_time.errors %}is-invalid{% endif %}"  id="date">
+                    <div id="dateHelp" class="invalid-feedback">{{ expense_form.date_time.errors|escape }}</div>
+                </div>
+                <div class="col-6">
+                    <label for="time" class="form-label">Time</label>
+                    <input type="time" name="time" class="form-control {% if expense_form.date_time.errors %}is-invalid{% endif %}"  id="time" value="{{ expense_form.date_time.value|date:'H:i' }}">
+                    <div id="timeHelp" class="invalid-feedback">{{ expense_form.date_time.errors|escape }}</div>
+                </div>
+            </div>
+
+            {% if expense_form.non_field_errors %}
+            <div class="alert alert-danger">
+                {% for error in login_form.non_field_errors %}
+                {{error}}
+                {% endfor%}
+            </div>
+            {% endif %}
+
+            <input id="date_time" name="date_time" type="hidden" value="{{ expense_form.date_time.value|date:'Y-m-d H:i' }}">
+            <button class="btn btn-primary btn-block" type="submit" id="updateExpenseBtn">Update</button>
+        </div>
+
     </form>
+
+    <!-- Delete expense modal -->
+    <div class="modal fade" id="deleteExpense" tabindex="-1" aria-labelledby="deleteExpense" aria-hidden="true">
+        <div class="modal-dialog modal-sm modal-dialog-centered">
+            <form method="post" action="{% url 'delete_expense' expense.id %}" class="w-100">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h5 class="modal-title">Delete expense</h5>
+                        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"><span class="material-icons">close</span></button>
+                    </div>
+                    <div class="modal-body">
+                        {% csrf_token %}
+                        Are you sure you want to delete expense <strong>{{ expense_form.description.value|escape }}</strong> ? 
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-outline-dark" data-bs-dismiss="modal">Close</button>
+                        <button class="btn btn-danger"  type="submit" id="submitButton" >Delete</button>
+                    </div>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <script>
+
+        let description = document.getElementById('description');
+        let amount = document.getElementById('amount');
+        let time = document.getElementById('time');
+        let date = document.getElementById('date');
+        let date_time = document.getElementById('date_time');
+        let submit_expense = document.getElementById('submitExpenseButton');
+
+        description.addEventListener('input', checkValues);
+        amount.addEventListener('input', checkValues);
+        
+        function checkValues(){
+            if( description.value && amount.value ){
+                submit_expense.disabled = false;
+            }else{
+                submit_expense.disabled = true;
+            }
+        }
+
+        function readyForm() {
+            date_time.value = date.value + ' ' + time.value;
+            return true;
+        }
+
+    </script>
 
 
 {% endblock content %}

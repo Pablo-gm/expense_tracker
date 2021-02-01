@@ -54,3 +54,17 @@
     padding-left: 0;
     margin-left: .5rem;
 }
+
+.navbar{
+    box-shadow: 0 0 12px rgba($dark, .2);
+}
+
+.navbar-brand{
+    line-height: 1.5rem;
+    height: 3rem;
+    display: flex;
+    align-items: center;
+    flex-shrink: 0;
+    font-weight: 600;
+    padding: 0;
+}

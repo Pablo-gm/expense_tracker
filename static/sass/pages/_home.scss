@@ -1,0 +1,30 @@
+.section{
+    padding-top: 6rem;
+    padding-bottom: 6rem;
+}
+
+.feature{
+    &__box{
+        padding: 2rem;
+    }
+    &__image{
+        width: 6rem;
+        margin: auto;
+        margin-bottom: 1rem;
+    }
+    &__text{
+        font-size: 1.25rem;
+        min-height: 4rem;
+        margin-bottom: 0;
+    }
+    &__list{
+        font-size: 1.25rem;
+        .material-icons {
+            vertical-align: sub;
+            margin-right: .5rem;
+        }
+        li:not(:last-child){
+            margin-bottom: .5rem;
+        }
+    }
+}

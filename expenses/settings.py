@@ -12,7 +12,10 @@ https://docs.djangoproject.com/en/3.1/ref/settings/
 
 from django.contrib.messages import constants as messages
 MESSAGE_TAGS = {
-    messages.ERROR: 'danger',
+    messages.ERROR: 'bg-danger text-white',
+    messages.SUCCESS: 'bg-success text-dark',
+    messages.INFO: 'bg-info text-white',
+    messages.WARNING: 'bg-warning text-dark'
 }
 
 from pathlib import Path

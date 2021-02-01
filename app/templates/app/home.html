@@ -3,12 +3,13 @@
 
 {% block content %}
 
-<div class="row align-items-center  justify-content-center py-5">
+<section class="section">
+  <div class="row align-items-center  justify-content-center">
     <div class="col-12 col-md-6 col-lg-6 order-md-2">
-        <img src="https://picsum.photos/600/450" alt="Intro image" class="img-fluid">
+        <img src="https://picsum.photos/800/600" alt="Intro image" class="img-fluid">
     </div>
     <div class="col-12 col-md-6 col-lg-6 order-md-1">
-        <h1 class="mb-4">Simple monthly budget planner</h1>
+        <h1 class="mb-4 mt-4 mt-lg-0">Simple monthly expense tracker</h1>
         <p class="lead">Made for personal finances. Create budgets, track expenses and plan for the future.</p>
         <div class="d-flex">
           <a class="btn btn-primary btn-lg" href="#" role="button">Sign up today</a>
@@ -16,83 +17,52 @@
         </div>
     </div>
 </div>
+</section>
 
-<h1>h1. Bootstrap heading</h1>
-<h2>h2. Bootstrap heading</h2>
-<h3>h3. Bootstrap heading</h3>
-<h4>h4. Bootstrap heading</h4>
-<h5>h5. Bootstrap heading</h5>
-<h6>h6. Bootstrap heading</h6>
-
-<button type="button" class="btn btn-primary">Primary</button>
-<button type="button" class="btn btn-secondary">Secondary</button>
-<button type="button" class="btn btn-success">Success</button>
-<button type="button" class="btn btn-danger">Danger</button>
-<button type="button" class="btn btn-warning">Warning</button>
-<button type="button" class="btn btn-info">Info</button>
-<button type="button" class="btn btn-light">Light</button>
-<button type="button" class="btn btn-dark">Dark</button>
-
-<button type="button" class="btn btn-link">Link</button>
-
-<div class="row justify-content-center">
-  <div class="col-md-4">
-    <form class="card shadow--1 p-3 my-3">
-      <div class="mb-3">
-        <label for="exampleInputEmail1" class="form-label">Email address</label>
-        <input type="email" class="form-control" id="exampleInputEmail1" aria-describedby="emailHelp">
-        <div id="emailHelp" class="form-text">We'll never share your email with anyone else.</div>
+<section class="section">
+  <div class="row text-center">
+    <div class="col-12">
+      <h2 class="mb-5">Minimum hassle</h2>
+    </div>
+    <div class="col-md-4">
+      <div class="card shadow--1 mb-4 mb-md-0 feature__box">
+        <img src="{% static '/images/website/step1.png' %}" alt="Step 1" class="feature__image">
+        <h4 class="h3"><span class="text-secondary">1.</span> Sign up</h4>
+        <p class="feature__text">Make an account<br> No fees required</p>
       </div>
-      <div class="mb-3">
-        <label for="exampleInputPassword1" class="form-label">Password</label>
-        <input type="password" class="form-control" id="exampleInputPassword1">
+    </div>
+    <div class="col-md-4">
+      <div class="card shadow--1 mb-4 mb-md-0 feature__box">
+        <img src="{% static '/images/website/step2.png' %}" alt="Step 2" class="feature__image">
+        <h4 class="h3"><span class="text-secondary">2.</span> Create a budget</h4>
+        <p class="feature__text">A two clicks process.</p>
       </div>
-      <div class="mb-3 form-check">
-        <input type="checkbox" class="form-check-input" id="exampleCheck1">
-        <label class="form-check-label" for="exampleCheck1">Check me out</label>
+    </div>
+    <div class="col-md-4">
+      <div class="card shadow--1 mb-4 mb-md-0 feature__box">
+        <img src="{% static '/images/website/step3.png' %}" alt="Step 3" class="feature__image">
+        <h4 class="h3"><span class="text-secondary">3.</span> Track expenses</h4>
+        <p class="feature__text">Record transactions and get insights.</p>
       </div>
-      <button type="submit" class="btn btn-primary">Submit</button>
-    </form>
-    
+    </div>
   </div>
-</div>
+</section>
 
-
-<div class="alert alert-warning alert-dismissible fade show" role="alert">
-  <strong>Holy guacamole!</strong> You should check in on some of those fields below.
-  <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
-</div>
-
-<div class="alert alert-warning alert-dismissible fade show" role="alert">
-  <strong>Holy guacamole!</strong> You should check in on some of those fields below.
-  <button type="button" class="btn-close btn-close--material" data-bs-dismiss="alert" aria-label="Close"><span class="material-icons">close</span></button>
-</div>
-
-
-
-<div class="alert alert-primary" role="alert">
-    A simple primary alert—check it out!
+<section class="section">
+  <div class="row align-items-center  justify-content-center py-5">
+    <div class="col-12 col-md-6 col-lg-6 text-center">
+        <img src="{% static '/images/website/preview1.png' %}" alt="Preview image" class="img-fluid">
+    </div>
+    <div class="col-12 col-md-6 col-lg-6 order-md-1">
+        <h2 class="">No more spreadsheets</h2>
+        <p class="lead">Manage personal finances easy, fast and intuitively.</p>
+        <ul class="list-unstyled feature__list">
+          <li><i class="material-icons  text-success">check_circle</i>Clean interface</li>
+          <li><i class="material-icons  text-success">check_circle</i>Responsive design</li>
+          <li><i class="material-icons  text-success">check_circle</i>Free to use</li>
+        </ul>
+    </div>
   </div>
-  <div class="alert alert-secondary" role="alert">
-    A simple secondary alert—check it out!
-  </div>
-  <div class="alert alert-success" role="alert">
-    A simple success alert—check it out!
-  </div>
-  <div class="alert alert-danger" role="alert">
-    A simple danger alert—check it out!
-  </div>
-  <div class="alert alert-warning" role="alert">
-    A simple warning alert—check it out!
-  </div>
-  <div class="alert alert-info" role="alert">
-    A simple info alert—check it out!
-  </div>
-  <div class="alert alert-light" role="alert">
-    A simple light alert—check it out!
-  </div>
-  <div class="alert alert-dark" role="alert">
-    A simple dark alert—check it out!
-  </div>
+</section>
 
 {% endblock content %}

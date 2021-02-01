@@ -1,7 +1,35 @@
 .btn{
+    &-lg{
+        line-height: 2rem;
+    }
+
     &--float{
         position: fixed;
         bottom: 1rem;
         right: 1rem;
     }
+
+    &-close{
+        align-items: center;
+        display: flex;
+        justify-content: center;
+        opacity: 1;
+        background: transparent;
+        color: inherit;
+    
+        &:hover, &:focus{
+            opacity: 1;
+            color: inherit;
+            background-color: rgba($dark, .08);
+        }
+    
+        &--material{
+            color: inherit;
+            position: absolute;
+            top: 0;
+            right: 0;
+            z-index: 2;
+        }
+    }
+
 }

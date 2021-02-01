@@ -4,7 +4,7 @@
         top: 5rem;
         left: 0;
         right: 0;
-        z-index: 1060;
+        z-index: 1045;
         padding: 0 1rem;
         display: flex;
         flex-direction: column;
@@ -21,20 +21,4 @@
 
 .alert-dismissible .btn-close{
     padding: 1rem;
-}
-
-.btn-close{
-    align-items: center;
-    display: flex;
-    justify-content: center;
-    opacity: 1;
-    background: transparent;
-
-    &--material{
-        color: inherit;
-        position: absolute;
-        top: 0;
-        right: 0;
-        z-index: 2;
-    }
 }

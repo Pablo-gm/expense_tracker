@@ -97,7 +97,7 @@ def account_view(request):
                     "username": request.POST['username'],
             }
             form.save()
-            context['success_message'] = "Updated"
+            messages.success(request, 'Account updated.')
     else:
         form = AccountUpdateForm(
 
@@ -257,6 +257,7 @@ def edit_expense(request, expense_id):
     try:
         expense = Expense.objects.get(user=request.user, id=expense_id)
         context['expense'] = expense
+        
     except Expense.DoesNotExist:
         raise Http404("Expense not found...")
 
@@ -279,7 +280,7 @@ def edit_expense(request, expense_id):
             try:
                 # If datetime is not fit for the budget
                 if obj['date_time'].year != budget.year or obj['date_time'].month != budget.month:
-                    messages.info(request, 'Invalid date')
+                    messages.error(request, 'Invalid date')
                 else:
                     expense.date_time = obj['date_time']
 
@@ -310,6 +311,8 @@ def edit_expense(request, expense_id):
             messages.error(request, 'Invalid data')
 
     else:
+        budget = Budget.objects.get(user=request.user, id=expense.budget.id)
+        context['budget'] = budget
         context['expense_form'] = ExpenseForm(instance=expense)
 
     return render(request, 'app/edit_expense.html', context)
@@ -330,9 +333,9 @@ def delete_expense(request, expense_id):
             budget = expense.budget
 
             if expense.expense_type == 'INC':
-                budget.balance = budget.balance + expense.amount
-            else:
                 budget.balance = budget.balance - expense.amount
+            else:
+                budget.balance = budget.balance + expense.amount
 
             budget.save()
             expense.delete()

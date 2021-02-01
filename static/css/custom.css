@@ -1,63 +1,11 @@
-.form-signin {
-    width: 100%;
-    max-width: 330px;
-    padding: 15px;
-    margin: auto;
-}
-
-h1{
-    font-size: 3rem;
-    line-height: 3.25rem;
-}
-
-h2{
-    font-size: 2.5rem;
-    line-height: 2.75rem;
-}
-
-h3{
-    font-size: 2rem;
-    line-height: 2.5rem;
-}
-
-h4{
-    font-size: 1.5rem;
-    line-height: 2.25rem;
-}
-
-h5{
-    font-size: 1.25rem;
-    line-height: 1.5rem;
-}
-
-h6{
-    font-size: 1rem;
-    line-height: 1.5rem;
-}
-
-/* Buttons */
-.btn-lg{
-    line-height: 2rem;
-}
-
 /* forms */
-
 .form-text{
     line-height: 1.25rem;
 }
 
-/* nav  */
-.navbar{
-    box-shadow: 0 0 12px rgb(47 49 50 / .2);
-}
-
-.navbar-brand{
-    line-height: 1.5rem;
-}
-
 /* Layout */
 .main{
-    margin-top: 6rem;
+    padding-top: 6rem;
 }
 
 /* Modal */
@@ -69,11 +17,6 @@ h6{
     box-shadow: 0px 2px 4px rgb(47 49 50 / .2);
 }
 
-.dropdown-menu{
-    box-shadow: 0px 4px 8px rgb(47 49 50 / .24);
-}
-
-
 /* @font-face {
     font-family: 'Material Icons';
     font-style: normal;
@@ -81,7 +24,7 @@ h6{
     src: url('../fonts/MaterialIconsOutlined-Regular.otf') format('opentype');
     } */
 
-    .material-icons {
+.material-icons {
   font-family: 'Material Icons Outlined';
   font-weight: normal;
   font-style: normal;

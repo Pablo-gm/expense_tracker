@@ -18,7 +18,7 @@
 <div class="row justify-content-center">
     <div class="col-lg-6">
         {% if budgets_list|length > 1 %}
-        <select name="year_select" id="year_select" aria-controls="budgets_by_year">
+        <select name="year_select" id="year_select" aria-controls="budgets_by_year" class="form-select width--8 mb-4">
             <option value="all">All</option>
             {% for by_year in budgets_list %}
             <option value="{{ by_year.grouper }}">{{ by_year.grouper }}</option>
@@ -26,7 +26,7 @@
         </select>
         {% endif %}
         {% if budgets_list|length > 0 %}
-        <button class="btn btn-primary mb-3" id="newBudgetBtn"  data-bs-toggle="modal" data-bs-target="#newBudget">Add Budget</button>
+        <button class="btn btn-primary btn--float" id="newBudgetBtn"  data-bs-toggle="modal" data-bs-target="#newBudget">Add Budget</button>
         {% endif %}
        
     </div>
@@ -35,7 +35,7 @@
 <div class="row justify-content-center">
     <div class="col-lg-6" id="budgets_by_year" aria-live="polite">
         {% for budget_year in budgets_list %}
-            <div class="budgets-js" data-year="{{ budget_year.grouper }}">
+            <div class="budgets-js mb-4" data-year="{{ budget_year.grouper }}">
                 <h5>{{ budget_year.grouper }}</h5>
                 {% for budget in budget_year.list %}
                 <div class="mb-2 shadow--1 card bg-white">
@@ -154,9 +154,9 @@
                     return;
                 }
             }
-            monthHelp.classList.add('d-none');
         }
-        
+
+        monthHelp.classList.add('d-none');
         submitBtn.disabled = false;
         return;
     }
