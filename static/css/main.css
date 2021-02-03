@@ -10694,6 +10694,33 @@ h6, .h6 {
   letter-spacing: 0.03em;
 }
 
+.form-text {
+  line-height: 1.25rem;
+}
+
+.material-icons {
+  font-family: "Material Icons Outlined";
+  font-weight: normal;
+  font-style: normal;
+  font-size: 24px;
+  /* Preferred icon size */
+  display: inline-block;
+  line-height: 1;
+  text-transform: none;
+  letter-spacing: normal;
+  word-wrap: normal;
+  white-space: nowrap;
+  direction: ltr;
+  /* Support for all WebKit browsers. */
+  -webkit-font-smoothing: antialiased;
+  /* Support for Safari and Chrome. */
+  text-rendering: optimizeLegibility;
+  /* Support for Firefox. */
+  -moz-osx-font-smoothing: grayscale;
+  /* Support for IE. */
+  font-feature-settings: "liga";
+}
+
 @media (max-width: 767.98px) {
   h1, .h1, h1 {
     font-size: 2rem;
@@ -10729,6 +10756,8 @@ h6, .h6 {
   position: fixed;
   bottom: 1rem;
   right: 1rem;
+  z-index: 1;
+  box-shadow: 0px 4px 6px rgba(47, 49, 50, 0.3);
 }
 .btn-close {
   align-items: center;
@@ -10798,19 +10827,8 @@ input[type=date]::-webkit-calendar-picker-indicator, input[type=time]::-webkit-c
   background-color: rgba(47, 49, 50, 0.08);
 }
 
-.link-list {
-  color: #2f3132;
-  transition: all 0.3s ease-in-out;
-}
-.link-list.active {
-  color: #5f5cff;
-}
-.link-list.active svg {
-  fill: #5f5cff;
-}
-.link-list:hover {
-  color: #5f5cff;
-  box-shadow: 0px 4px 8px rgba(47, 49, 50, 0.3);
+.modal-body {
+  padding: 0 1rem;
 }
 
 .link-list {
@@ -10866,6 +10884,14 @@ input[type=date]::-webkit-calendar-picker-indicator, input[type=time]::-webkit-c
   height: 2px;
 }
 
+.shadow--1 {
+  box-shadow: 0px 2px 4px rgba(47, 49, 50, 0.25);
+}
+
+.main {
+  padding-top: 6rem;
+}
+
 .nav-link-icon {
   padding: 0;
   outline: 0;
@@ -10874,6 +10900,9 @@ input[type=date]::-webkit-calendar-picker-indicator, input[type=time]::-webkit-c
 .nav-link-icon__wrapper {
   display: flex;
   align-items: center;
+}
+.nav-link-icon.active svg {
+  fill: #5f5cff;
 }
 .nav-link-icon__icon {
   border-radius: 50%;
@@ -10996,8 +11025,8 @@ input[type=date]::-webkit-calendar-picker-indicator, input[type=time]::-webkit-c
 }
 
 .section {
-  padding-top: 6rem;
-  padding-bottom: 6rem;
+  padding-top: 5rem;
+  padding-bottom: 5rem;
 }
 
 .feature__box {

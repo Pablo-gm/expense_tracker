@@ -7,6 +7,8 @@
         position: fixed;
         bottom: 1rem;
         right: 1rem;
+        z-index: 1;
+        box-shadow: 0px 4px 6px rgba($dark, .30);
     }
 
     &-close{

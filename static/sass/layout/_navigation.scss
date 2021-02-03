@@ -9,6 +9,12 @@
         align-items: center;
     }
 
+    &.active{
+        svg {
+            fill: $primary;
+        }
+    }
+
     &__icon{
         border-radius: 50%;
         width: 2.5rem;
