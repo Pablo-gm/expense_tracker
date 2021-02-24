@@ -1,0 +1,37 @@
+[data-tooltip][aria-label] { 
+    position: relative;
+
+    &::before{
+        content: attr(aria-label);
+        position: absolute;
+        opacity: 0;
+        visibility: hidden;
+        font-size: .875rem;
+        padding: .25rem .5rem;
+        color: $white;
+        border-radius: .25rem;
+        font-weight: 400;
+        background-color: rgba($black, .8);
+        max-width: 8rem;
+        white-space: nowrap;
+    }
+    &:hover::before, &:focus::before{
+        visibility: visible;
+        opacity: 1;
+        transition-property: opacity;
+        transition-duration: 0.1s;
+        transition-timing-function: linear;
+    }
+}
+
+[data-tooltip^="up"][aria-label]::before {
+    bottom: calc(0.5rem + 100%);
+    right: 50%;
+    transform: translateX(50%);
+}
+
+[data-tooltip^="down"][aria-label]::before {
+    top: calc(0.5rem + 100%);
+    right: 50%;
+    transform: translateX(50%);
+}

@@ -10827,6 +10827,43 @@ input[type=date]::-webkit-calendar-picker-indicator, input[type=time]::-webkit-c
   background-color: rgba(47, 49, 50, 0.08);
 }
 
+[data-tooltip][aria-label] {
+  position: relative;
+}
+[data-tooltip][aria-label]::before {
+  content: attr(aria-label);
+  position: absolute;
+  opacity: 0;
+  visibility: hidden;
+  font-size: 0.875rem;
+  padding: 0.25rem 0.5rem;
+  color: #fff;
+  border-radius: 0.25rem;
+  font-weight: 400;
+  background-color: rgba(0, 0, 0, 0.8);
+  max-width: 8rem;
+  white-space: nowrap;
+}
+[data-tooltip][aria-label]:hover::before, [data-tooltip][aria-label]:focus::before {
+  visibility: visible;
+  opacity: 1;
+  transition-property: opacity;
+  transition-duration: 0.1s;
+  transition-timing-function: linear;
+}
+
+[data-tooltip^=up][aria-label]::before {
+  bottom: calc(0.5rem + 100%);
+  right: 50%;
+  transform: translateX(50%);
+}
+
+[data-tooltip^=down][aria-label]::before {
+  top: calc(0.5rem + 100%);
+  right: 50%;
+  transform: translateX(50%);
+}
+
 .modal-body {
   padding: 0 1rem;
 }
