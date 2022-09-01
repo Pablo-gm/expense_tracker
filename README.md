@@ -1,6 +1,13 @@
 # Zenexpender
 A simple expense tracker project to manage personal finance.
 
+## Previews
+Home
+![Home preview](/preview/home.png)
+
+Budget
+![Budget preview](/preview/budget.png)
+
 ## Install
 Once you have python installed on your computer.
 
@@ -22,8 +29,7 @@ Activate virtualvenv `myvenv`
 myvenv\Scripts\activate.bat 
 
 # Gitbash
-cd myvenv\Scripts\
-. activate
+cd myvenv\Scripts\. activate
 
 # Linux
 source virtualenv myvenv/bin/active
